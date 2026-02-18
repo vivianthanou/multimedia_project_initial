@@ -133,6 +133,10 @@ public abstract class User {
 
     public abstract int maxVisibleVersions();
 
+    public Map<String, Integer> getLastSeenVersionByDocId() {
+        return Collections.unmodifiableMap(lastSeenVersionByDocId);
+    }
+
     public abstract String getRoleName();
 
     @Override
