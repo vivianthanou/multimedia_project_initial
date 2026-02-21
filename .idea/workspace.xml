@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="23a5ea6a-bd8e-4d3e-8c10-4ceb19cd84d3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="23a5ea6a-bd8e-4d3e-8c10-4ceb19cd84d3" name="Changes" comment="first attempt">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/ValidationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/ValidationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/domain/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/domain/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/DocumentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/DocumentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/MainApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/MainApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminCategoriesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminCategoriesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminUsersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminUsersController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/DocumentsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/DocumentsController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,7 +121,13 @@
       <workItem from="1771178784591" duration="432000" />
       <workItem from="1771179402600" duration="258000" />
       <workItem from="1771179793123" duration="24633000" />
-      <workItem from="1771364585117" duration="2511000" />
+      <workItem from="1771364585117" duration="2807000" />
+      <workItem from="1771374413451" duration="4705000" />
+      <workItem from="1771426593870" duration="4129000" />
+      <workItem from="1771500206530" duration="3236000" />
+      <workItem from="1771514673032" duration="4828000" />
+      <workItem from="1771540770239" duration="2575000" />
+      <workItem from="1771700505620" duration="4778000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <option name="closed" value="true" />
@@ -127,7 +137,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771179470096</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="first attempt">
+      <option name="closed" value="true" />
+      <created>1771374145377</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1771374145377</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -156,7 +174,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial" />
+    <MESSAGE value="first attempt" />
+    <option name="LAST_COMMIT_MESSAGE" value="first attempt" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -170,6 +189,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/org/example/Main.java</url>
           <line>13</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/MainApp.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

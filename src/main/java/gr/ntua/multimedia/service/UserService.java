@@ -49,8 +49,14 @@ final class UserService {
             validatedAccess.add(categoryId);
         }
 
+        String normalizedRole = role.toUpperCase();
+        if (!normalizedRole.equals("ADMIN") && validatedAccess.isEmpty()) {
+            throw new ValidationException("Non-admin users must have access to at least one category");
+        }
+
+
         String passwordHash = PasswordHasher.hash(plainPassword);
-        User created = switch (role.toUpperCase()) {
+        User created = switch (normalizedRole) {
             case "SIMPLE" -> new SimpleUser(username, passwordHash, firstName, lastName, validatedAccess, Set.of(), Map.of());
             case "AUTHOR" -> new Author(username, passwordHash, firstName, lastName, validatedAccess, Set.of(), Map.of());
             case "ADMIN" -> new Admin(username, passwordHash, firstName, lastName, validatedAccess, Set.of(), Map.of());

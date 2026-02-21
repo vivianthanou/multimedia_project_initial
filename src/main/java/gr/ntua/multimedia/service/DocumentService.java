@@ -44,8 +44,8 @@ final class DocumentService {
     void updateDocumentText(Author actor, String documentId, String newContent) {
         AccessControl.requireAuthor(actor, usersByUsername);
         Document doc = AccessControl.findDocument(documentId, documentsById);
-        if (!actor.canEditDocument(doc)) {
-            throw new PermissionDeniedException("Only owning author can edit document");
+        if (!(actor.canEditDocument(doc) || actor instanceof Admin)) {
+            throw new PermissionDeniedException("Not allowed to edit document");
         }
         doc.addNewVersion(newContent, DateTimeUtil.now());
     }

@@ -20,6 +20,10 @@ public class MainApp extends Application {
         storage = new JsonStorage(Path.of("data", "medialab.json"));
         system = storage.loadOrCreateDefault();
 
+        showLogin(stage);
+    }
+
+    private void showLogin(Stage stage) {
         LoginController loginController = new LoginController(system);
         Scene loginScene = new Scene(loginController.createView(user -> showDashboard(stage, user)), 420, 200);
         stage.setTitle("MediaLab DMS");
@@ -29,9 +33,18 @@ public class MainApp extends Application {
 
     private void showDashboard(Stage stage, User user) {
         DashboardController dashboardController = new DashboardController(system);
-        Scene dashboardScene = new Scene(dashboardController.createView(user), 900, 640);
+
+        Scene dashboardScene = new Scene(
+                dashboardController.createView(user, () -> {
+                    // SAVE on logout
+                    storage.save(system);
+                    showLogin(stage);
+                }),
+                900, 640
+        );
         stage.setScene(dashboardScene);
     }
+
 
     @Override
     public void stop() {

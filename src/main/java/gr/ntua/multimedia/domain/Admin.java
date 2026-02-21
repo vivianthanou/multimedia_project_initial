@@ -30,6 +30,11 @@ public class Admin extends Author {
         return "ADMIN";
     }
 
+    @Override
+    public boolean canAccessCategory(String categoryId) {
+        return true;
+    }
+
     public boolean canManageUsers() {
         return true;
     }
@@ -37,4 +42,6 @@ public class Admin extends Author {
     public boolean canManageCategories() {
         return true;
     }
+
+
 }
