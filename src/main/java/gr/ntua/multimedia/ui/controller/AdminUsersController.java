@@ -7,18 +7,17 @@ import gr.ntua.multimedia.exception.ValidationException;
 import gr.ntua.multimedia.service.MediaLabSystem;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import java.util.Optional;
+import javafx.scene.layout.VBox;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class AdminUsersController {
     private final MediaLabSystem system;
-
     private final Runnable onDataChanged;
 
     public AdminUsersController(MediaLabSystem system, Runnable onDataChanged) {
@@ -30,6 +29,11 @@ public class AdminUsersController {
         // Users list
         ListView<User> users = new ListView<>();
         users.getItems().setAll(system.listUsers(admin));
+        VBox.setVgrow(users, Priority.ALWAYS);
+
+        Label formatHint = new Label("Format: username (role) - first name last name | categories");
+        formatHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #555;");
+
         users.setCellFactory(lv -> new ListCell<>() {
             private final Label text = new Label();
             private final Button editBtn = new Button("Edit");
@@ -44,12 +48,25 @@ public class AdminUsersController {
                     User target = getItem();
                     if (target == null) return;
 
-                    // Popup: select categories (multi-select)
+                    // --- UI fields (optional updates)
+                    TextField newUsernameField = new TextField();
+                    newUsernameField.setPromptText("New username (leave empty to keep)");
+                    newUsernameField.setText(target.getUsername()); // prefill for convenience
+
+                    ComboBox<String> roleBox = new ComboBox<>();
+                    roleBox.getItems().addAll("SIMPLE", "AUTHOR", "ADMIN");
+                    roleBox.setValue(target.getRoleName());
+                    roleBox.setPromptText("Role (optional)");
+
+                    PasswordField newPasswordField = new PasswordField();
+                    newPasswordField.setPromptText("New password (leave empty to keep)");
+
+                    // Categories multi-select
                     ListView<Category> categoryList = new ListView<>();
                     categoryList.getItems().setAll(system.getCategories().values());
                     categoryList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                    categoryList.setPrefHeight(160);
 
-                    // show category name
                     categoryList.setCellFactory(x -> new ListCell<>() {
                         @Override
                         protected void updateItem(Category item, boolean empty) {
@@ -58,7 +75,7 @@ public class AdminUsersController {
                         }
                     });
 
-                    // pre-select current categories
+                    // Preselect current categories
                     for (int i = 0; i < categoryList.getItems().size(); i++) {
                         Category c = categoryList.getItems().get(i);
                         if (target.getAllowedCategoryIds().contains(c.getId())) {
@@ -66,31 +83,70 @@ public class AdminUsersController {
                         }
                     }
 
-                    Dialog<Set<String>> dialog = new Dialog<>();
-                    dialog.setTitle("Edit User Categories");
-                    dialog.setHeaderText("User: " + target.getUsername() + " (" + target.getRoleName() + ")\nSelect allowed categories");
+                    Label hint = new Label("Leave fields empty to keep current values.");
+                    hint.setStyle("-fx-font-size: 11px; -fx-text-fill: #555;");
 
+                    VBox content = new VBox(
+                            8,
+                            hint,
+                            new Label("Username"),
+                            newUsernameField,
+                            new Label("Role"),
+                            roleBox,
+                            new Label("Reset password"),
+                            newPasswordField,
+                            new Label("Allowed categories (Ctrl+Click for multiple)"),
+                            categoryList
+                    );
+
+                    Dialog<ButtonType> dialog = new Dialog<>();
+                    dialog.setTitle("Edit User");
+                    dialog.setHeaderText("User: " + target.getUsername() + " (" + target.getRoleName() + ")");
                     ButtonType saveType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
                     dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+                    dialog.getDialogPane().setContent(content);
 
-                    dialog.getDialogPane().setContent(categoryList);
+                    Optional<ButtonType> choice = dialog.showAndWait();
+                    if (choice.isEmpty() || choice.get() != saveType) return;
 
-                    dialog.setResultConverter(bt -> {
-                        if (bt != saveType) return null;
-                        Set<String> ids = new HashSet<>();
-                        for (Category c : categoryList.getSelectionModel().getSelectedItems()) {
-                            ids.add(c.getId());
-                        }
-                        return ids;
-                    });
+                    // Build optionals: update only what changed
+                    String enteredUsername = newUsernameField.getText() == null ? "" : newUsernameField.getText().trim();
+                    Optional<String> newUsernameOpt =
+                            enteredUsername.isBlank() || enteredUsername.equals(target.getUsername())
+                                    ? Optional.empty()
+                                    : Optional.of(enteredUsername);
 
-                    Optional<Set<String>> result = dialog.showAndWait();
-                    if (result.isEmpty() || result.get() == null) return; // cancel
+                    String selectedRole = roleBox.getValue();
+                    Optional<String> newRoleOpt =
+                            (selectedRole == null || selectedRole.isBlank() || selectedRole.equalsIgnoreCase(target.getRoleName()))
+                                    ? Optional.empty()
+                                    : Optional.of(selectedRole);
+
+                    String pwd = newPasswordField.getText() == null ? "" : newPasswordField.getText();
+                    Optional<String> newPasswordOpt = pwd.isBlank() ? Optional.empty() : Optional.of(pwd);
+
+                    Set<String> selectedCategoryIds = new HashSet<>();
+                    for (Category c : categoryList.getSelectionModel().getSelectedItems()) {
+                        selectedCategoryIds.add(c.getId());
+                    }
+                    Optional<Set<String>> newCategoriesOpt =
+                            selectedCategoryIds.equals(target.getAllowedCategoryIds())
+                                    ? Optional.empty()
+                                    : Optional.of(selectedCategoryIds);
 
                     try {
-                        system.updateUserCategories(admin, target.getUsername(), result.get());
+                        system.updateUser(
+                                admin,
+                                target.getUsername(),
+                                newUsernameOpt,
+                                newRoleOpt,
+                                newCategoriesOpt,
+                                newPasswordOpt
+                        );
+
                         users.getItems().setAll(system.listUsers(admin));
                         onDataChanged.run();
+
                     } catch (RuntimeException ex) {
                         showError(ex.getMessage());
                     }
@@ -133,9 +189,8 @@ public class AdminUsersController {
                 setGraphic(row);
             }
         });
-        VBox.setVgrow(users, Priority.ALWAYS);
 
-        // ✅ Category multi-select list (3Α)
+        // ----- Create user form (kept from your version)
         ListView<Category> categories = new ListView<>();
         categories.getItems().setAll(system.getCategories().values());
         categories.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -148,35 +203,25 @@ public class AdminUsersController {
             }
         });
 
-        Label categoriesHint = new Label("Allowed categories (select 1+ for SIMPLE/AUTHOR)");
+        Label categoriesHint = new Label("Allowed categories (Ctrl+Click for multiple). Select 1+ for SIMPLE/AUTHOR.");
+        categoriesHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #555;");
 
-        TextField first = new TextField();
-        first.setPromptText("First name");
-
-        TextField last = new TextField();
-        last.setPromptText("Last name");
-
-        TextField role = new TextField();
-        role.setPromptText("Role (SIMPLE/AUTHOR/ADMIN)");
-
-        TextField username = new TextField();
-        username.setPromptText("Username");
-
-        PasswordField password = new PasswordField();
-        password.setPromptText("Password");
+        TextField first = new TextField(); first.setPromptText("First name");
+        TextField last = new TextField(); last.setPromptText("Last name");
+        TextField role = new TextField(); role.setPromptText("Role (SIMPLE/AUTHOR/ADMIN)");
+        TextField username = new TextField(); username.setPromptText("Username");
+        PasswordField password = new PasswordField(); password.setPromptText("Password");
 
         Button add = new Button("Add user");
         add.setOnAction(e -> {
             try {
                 String roleValue = role.getText() == null ? "" : role.getText().trim().toUpperCase();
 
-                // ✅ collect selected categories (multiple)
                 Set<String> allowedCategoryIds = new HashSet<>();
                 for (Category c : categories.getSelectionModel().getSelectedItems()) {
                     allowedCategoryIds.add(c.getId());
                 }
 
-                // UI-level validation (service also enforces it)
                 if (!"ADMIN".equals(roleValue) && allowedCategoryIds.isEmpty()) {
                     showError("Please select at least one category for SIMPLE/AUTHOR users.");
                     return;
@@ -192,16 +237,10 @@ public class AdminUsersController {
                         password.getText()
                 );
 
-                // Refresh list
                 users.getItems().setAll(system.listUsers(admin));
                 onDataChanged.run();
 
-                // Clear inputs
-                first.clear();
-                last.clear();
-                role.clear();
-                username.clear();
-                password.clear();
+                first.clear(); last.clear(); role.clear(); username.clear(); password.clear();
                 categories.getSelectionModel().clearSelection();
 
             } catch (ValidationException ex) {
@@ -211,37 +250,18 @@ public class AdminUsersController {
             }
         });
 
-        Button delete = new Button("Delete selected");
-        delete.setOnAction(e -> {
-            User u = users.getSelectionModel().getSelectedItem();
-            if (u != null) {
-                try {
-                    system.deleteUser(admin, u.getUsername());
-                    users.getItems().setAll(system.listUsers(admin));
-                    onDataChanged.run();
-
-                } catch (RuntimeException ex) {
-                    showError(ex.getMessage());
-                }
-            }
-        });
-
-        Label formatHint = new Label("Format: username (role) - first name last name | categories");
-        formatHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #555;");
-
         VBox root = new VBox(
                 8,
                 new Label("Users"),
                 formatHint,
                 users,
                 new Separator(),
-                new Label("Create user"),
+                new Label("Create New User"),
                 first, last, role,
                 categoriesHint,
                 categories,
                 username, password,
-                add,
-                delete
+                add
         );
         root.setPadding(new Insets(10));
         return root;

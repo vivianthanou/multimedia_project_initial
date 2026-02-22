@@ -39,7 +39,7 @@ public class MediaLabSystem {
         this.categoriesById = new HashMap<>();
         this.documentsById = new HashMap<>();
         this.authService = new AuthService(this.usersByUsername);
-        this.userService = new UserService(this.usersByUsername, this.categoriesById);
+        this.userService = new UserService(this.usersByUsername, this.categoriesById, this.documentsById);
         this.followService = new FollowService(this.documentsById);
         this.categoryService = new CategoryService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
         this.documentService = new DocumentService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
@@ -61,7 +61,7 @@ public class MediaLabSystem {
         this.categoriesById = new HashMap<>(categoriesById);
         this.documentsById = new HashMap<>(documentsById);
         this.authService = new AuthService(this.usersByUsername);
-        this.userService = new UserService(this.usersByUsername, this.categoriesById);
+        this.userService = new UserService(this.usersByUsername, this.categoriesById, this.documentsById);
         this.followService = new FollowService(this.documentsById);
         this.categoryService = new CategoryService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
         this.documentService = new DocumentService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
@@ -79,9 +79,15 @@ public class MediaLabSystem {
         userService.deleteUser(adminActor, username);
     }
 
-    public void updateUserCategories(Admin adminActor, String targetUsername, Set<String> newAllowedCategoryIds) {
-        userService.updateUserCategories(adminActor, targetUsername, newAllowedCategoryIds);
+    public void updateUser(Admin adminActor,
+                           String targetUsername,
+                           Optional<String> newUsernameOpt,
+                           Optional<String> newRoleOpt,
+                           Optional<Set<String>> newAllowedCategoryIdsOpt,
+                           Optional<String> newPlainPasswordOpt) {
+        userService.updateUser(adminActor, targetUsername, newUsernameOpt, newRoleOpt, newAllowedCategoryIdsOpt, newPlainPasswordOpt);
     }
+
     public List<User> listUsers(Admin adminActor) {
         return userService.listUsers(adminActor);
     }

@@ -56,20 +56,28 @@ public class DashboardController {
         // ===== Functional area (Part 2) =====
         TabPane tabs = new TabPane();
 
-        // Pass onDataChanged callback to controllers
-        Runnable onDataChanged = refreshSummary;
+        // We'll store the real callback here (so we can refer to it before it is assigned)
+        final Runnable[] onDataChangedHolder = new Runnable[1];
 
-        tabs.getTabs().add(new Tab("Documents",
-                wrapScrollable(new DocumentsController(system, onDataChanged).createView(user))
-        ));
+        // Documents tab (always present)
+        DocumentsController documentsController = new DocumentsController(system, () -> onDataChangedHolder[0].run());
+        tabs.getTabs().add(new Tab("Documents", wrapScrollable(documentsController.createView(user))));
 
         if (user instanceof Admin admin) {
-            tabs.getTabs().add(new Tab("Users",
-                    wrapScrollable(new AdminUsersController(system, onDataChanged).createView(admin))
-            ));
-            tabs.getTabs().add(new Tab("Categories",
-                    wrapScrollable(new AdminCategoriesController(system, onDataChanged).createView(admin))
-            ));
+            AdminUsersController adminUsersController = new AdminUsersController(system, () -> onDataChangedHolder[0].run());
+            AdminCategoriesController adminCategoriesController = new AdminCategoriesController(system, () -> onDataChangedHolder[0].run());
+
+            tabs.getTabs().add(new Tab("Users", wrapScrollable(adminUsersController.createView(admin))));
+            tabs.getTabs().add(new Tab("Categories", wrapScrollable(adminCategoriesController.createView(admin))));
+
+            // ✅ Live refresh: summary + categories list (so doc counts update)
+            onDataChangedHolder[0] = () -> {
+                refreshSummary.run();
+                adminCategoriesController.refresh();
+            };
+        } else {
+            // Non-admin: only summary refresh
+            onDataChangedHolder[0] = refreshSummary;
         }
 
         root.setTop(topBox);

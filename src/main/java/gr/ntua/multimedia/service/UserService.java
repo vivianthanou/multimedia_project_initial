@@ -9,7 +9,9 @@ import gr.ntua.multimedia.exception.NotFoundException;
 import gr.ntua.multimedia.exception.ValidationException;
 import gr.ntua.multimedia.util.PasswordHasher;
 import gr.ntua.multimedia.util.ValidationUtil;
+import gr.ntua.multimedia.domain.Document;
 
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,10 +23,14 @@ import java.util.Set;
 final class UserService {
     private final Map<String, User> usersByUsername;
     private final Map<String, Category> categoriesById;
+    private final Map<String, Document> documentsById;
 
-    UserService(Map<String, User> usersByUsername, Map<String, Category> categoriesById) {
+    UserService(Map<String, User> usersByUsername,
+                Map<String, Category> categoriesById,
+                Map<String, Document> documentsById) {
         this.usersByUsername = usersByUsername;
         this.categoriesById = categoriesById;
+        this.documentsById = documentsById;
     }
 
     void addUser(Admin adminActor, String firstName, String lastName, String role,
@@ -81,7 +87,13 @@ final class UserService {
         AccessControl.requireAdmin(adminActor, usersByUsername);
         return Collections.unmodifiableList(new ArrayList<>(usersByUsername.values()));
     }
-    void updateUserCategories(Admin adminActor, String targetUsername, Set<String> newAllowedCategoryIds) {
+    void updateUser(Admin adminActor,
+                    String targetUsername,
+                    Optional<String> newUsernameOpt,
+                    Optional<String> newRoleOpt,
+                    Optional<Set<String>> newAllowedCategoryIdsOpt,
+                    Optional<String> newPlainPasswordOpt) {
+
         AccessControl.requireAdmin(adminActor, usersByUsername);
         ValidationUtil.requireNonBlank(targetUsername, "targetUsername");
 
@@ -90,60 +102,135 @@ final class UserService {
             throw new NotFoundException("User not found: " + targetUsername);
         }
 
-        // Δεν επιτρέπουμε αλλαγές στον default admin (προαιρετικό αλλά καλό)
         if ("medialab".equals(targetUsername)) {
             throw new ValidationException("Default admin cannot be modified");
         }
 
-        // Validate categories exist
-        Set<String> validatedAccess = new HashSet<>();
-        for (String categoryId : Optional.ofNullable(newAllowedCategoryIds).orElseGet(Set::of)) {
-            ValidationUtil.requireNonBlank(categoryId, "categoryId");
-            if (!categoriesById.containsKey(categoryId)) {
-                throw new NotFoundException("Category not found: " + categoryId);
+        // ---- Determine final username
+        String finalUsername = existing.getUsername();
+        if (newUsernameOpt != null && newUsernameOpt.isPresent()) {
+            String candidate = newUsernameOpt.get().trim();
+            if (candidate.isBlank()) {
+                throw new ValidationException("username cannot be blank");
             }
-            validatedAccess.add(categoryId);
+            finalUsername = candidate;
         }
 
-        // SIMPLE/AUTHOR must have at least 1 category (ADMIN can be empty)
-        String role = existing.getRoleName();
-        if (!"ADMIN".equalsIgnoreCase(role) && validatedAccess.isEmpty()) {
-            throw new ValidationException("SIMPLE/AUTHOR users must have at least one allowed category.");
+        // If username changes, ensure uniqueness
+        if (!finalUsername.equals(existing.getUsername()) && usersByUsername.containsKey(finalUsername)) {
+            throw new ValidationException("Username already exists: " + finalUsername);
         }
 
-        // Rebuild user object to avoid needing protected grant/revoke methods across packages
-        // Keep: username, passwordHash, names, followed docs, lastSeen map
-        User rebuilt = switch (role.toUpperCase()) {
+        // ---- Determine final role
+        String finalRole = existing.getRoleName();
+        if (newRoleOpt != null && newRoleOpt.isPresent()) {
+            String candidate = newRoleOpt.get().trim().toUpperCase();
+            if (candidate.isBlank()) {
+                throw new ValidationException("role cannot be blank");
+            }
+            if (!candidate.equals("SIMPLE") && !candidate.equals("AUTHOR") && !candidate.equals("ADMIN")) {
+                throw new ValidationException("Unsupported role: " + candidate);
+            }
+            finalRole = candidate;
+        }
+
+        // ---- Determine final categories
+        Set<String> finalAllowed = new HashSet<>(existing.getAllowedCategoryIds());
+        if (newAllowedCategoryIdsOpt != null && newAllowedCategoryIdsOpt.isPresent()) {
+            Set<String> incoming = newAllowedCategoryIdsOpt.get();
+            Set<String> validated = new HashSet<>();
+            for (String categoryId : Optional.ofNullable(incoming).orElseGet(Set::of)) {
+                ValidationUtil.requireNonBlank(categoryId, "categoryId");
+                if (!categoriesById.containsKey(categoryId)) {
+                    throw new NotFoundException("Category not found: " + categoryId);
+                }
+                validated.add(categoryId);
+            }
+            finalAllowed = validated;
+        }
+        // If categories changed, remove follows that belong to removed categories
+        Set<String> finalFollowed = new HashSet<>(existing.getFollowedDocumentIds());
+        Map<String, Integer> finalLastSeen = new HashMap<>(existing.getLastSeenVersionByDocId());
+
+        if (newAllowedCategoryIdsOpt != null && newAllowedCategoryIdsOpt.isPresent()) {
+            Set<String> oldAllowed = new HashSet<>(existing.getAllowedCategoryIds());
+
+            Set<String> removedCategories = new HashSet<>(oldAllowed);
+            removedCategories.removeAll(finalAllowed);
+
+            if (!removedCategories.isEmpty()) {
+                Set<String> toUnfollow = new HashSet<>();
+                for (String docId : finalFollowed) {
+                    Document d = documentsById.get(docId);
+                    if (d == null) {
+                        // document no longer exists -> cleanup follow as well
+                        toUnfollow.add(docId);
+                        continue;
+                    }
+                    if (removedCategories.contains(d.getCategoryId())) {
+                        toUnfollow.add(docId);
+                    }
+                }
+
+                for (String docId : toUnfollow) {
+                    finalFollowed.remove(docId);
+                    finalLastSeen.remove(docId);
+                }
+            }
+        }
+
+        // Non-admin users must have at least 1 category
+        if (!"ADMIN".equalsIgnoreCase(finalRole) && finalAllowed.isEmpty()) {
+            throw new ValidationException("Non-admin users must have access to at least one category");
+        }
+
+        // ---- Determine final password hash
+        String finalPasswordHash = existing.getPasswordHash();
+        if (newPlainPasswordOpt != null && newPlainPasswordOpt.isPresent()) {
+            String p = newPlainPasswordOpt.get();
+            if (p == null || p.isBlank()) {
+                throw new ValidationException("password cannot be blank");
+            }
+            finalPasswordHash = PasswordHasher.hash(p);
+        }
+
+        // ---- Rebuild user preserving name + followed + lastSeen
+        User rebuilt = switch (finalRole) {
             case "ADMIN" -> new Admin(
-                    existing.getUsername(),
-                    existing.getPasswordHash(),
+                    finalUsername,
+                    finalPasswordHash,
                     existing.getFirstName(),
                     existing.getLastName(),
-                    validatedAccess,
-                    existing.getFollowedDocumentIds(),
-                    existing.getLastSeenVersionByDocId()
+                    finalAllowed,
+                    finalFollowed,
+                    finalLastSeen
             );
             case "AUTHOR" -> new Author(
-                    existing.getUsername(),
-                    existing.getPasswordHash(),
+                    finalUsername,
+                    finalPasswordHash,
                     existing.getFirstName(),
                     existing.getLastName(),
-                    validatedAccess,
-                    existing.getFollowedDocumentIds(),
-                    existing.getLastSeenVersionByDocId()
+                    finalAllowed,
+                    finalFollowed,
+                    finalLastSeen
             );
-            default -> new SimpleUser(
-                    existing.getUsername(),
-                    existing.getPasswordHash(),
+            case "SIMPLE" -> new SimpleUser(
+                    finalUsername,
+                    finalPasswordHash,
                     existing.getFirstName(),
                     existing.getLastName(),
-                    validatedAccess,
-                    existing.getFollowedDocumentIds(),
-                    existing.getLastSeenVersionByDocId()
+                    finalAllowed,
+                    finalFollowed,
+                    finalLastSeen
             );
+            default -> throw new ValidationException("Unsupported role: " + finalRole);
         };
 
-        usersByUsername.put(targetUsername, rebuilt);
+        // ---- Persist under correct map key
+        if (!finalUsername.equals(existing.getUsername())) {
+            usersByUsername.remove(existing.getUsername());
+        }
+        usersByUsername.put(finalUsername, rebuilt);
     }
 
 

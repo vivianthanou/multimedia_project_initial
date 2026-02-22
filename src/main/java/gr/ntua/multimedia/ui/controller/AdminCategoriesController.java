@@ -15,6 +15,7 @@ import java.util.Optional;
 public class AdminCategoriesController {
     private final MediaLabSystem system;
     private final Runnable onDataChanged;
+    private ListView<Category> categoriesList;
 
     public AdminCategoriesController(MediaLabSystem system, Runnable onDataChanged) {
         this.system = system;
@@ -22,15 +23,15 @@ public class AdminCategoriesController {
     }
 
     public VBox createView(Admin admin) {
-        Label formatHint = new Label("Format: Category Name | Category ID ");
+        Label formatHint = new Label("Format: Category Name | Category ID | Number of Documents ");
         formatHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #555;");
 
-        ListView<Category> categories = new ListView<>();
-        categories.getItems().setAll(system.getCategories().values());
-        VBox.setVgrow(categories, Priority.ALWAYS);
+        categoriesList = new ListView<>();
+        categoriesList.getItems().setAll(system.getCategories().values());
+        VBox.setVgrow(categoriesList, Priority.ALWAYS);
 
         // ✅ Per-row actions (Rename / Delete)
-        categories.setCellFactory(lv -> new ListCell<>() {
+        categoriesList.setCellFactory(lv -> new ListCell<>() {
             private final Label text = new Label();
             private final Button renameBtn = new Button("Rename");
             private final Button deleteBtn = new Button("Delete");
@@ -72,7 +73,7 @@ public class AdminCategoriesController {
 
                     try {
                         system.renameCategory(admin, c.getId(), newName);
-                        categories.getItems().setAll(system.getCategories().values());
+                        categoriesList.getItems().setAll(system.getCategories().values());
                         onDataChanged.run();
                     } catch (RuntimeException ex) {
                         showError(ex.getMessage());
@@ -100,7 +101,7 @@ public class AdminCategoriesController {
 
                     try {
                         system.deleteCategory(admin, c.getId());
-                        categories.getItems().setAll(system.getCategories().values());
+                        categoriesList.getItems().setAll(system.getCategories().values());
                         onDataChanged.run();
                     } catch (RuntimeException ex) {
                         showError(ex.getMessage());
@@ -115,7 +116,11 @@ public class AdminCategoriesController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    text.setText(item.getName() + " | " + item.getId());
+                    int docCount = (int) system.getDocuments().values().stream()
+                            .filter(d -> d.getCategoryId().equals(item.getId()))
+                            .count();
+
+                    text.setText(item.getName() + " | " + item.getId() + " | " + docCount);
                     setGraphic(row);
                 }
             }
@@ -129,7 +134,7 @@ public class AdminCategoriesController {
         add.setOnAction(e -> {
             try {
                 system.addCategory(admin, name.getText());
-                categories.getItems().setAll(system.getCategories().values());
+                categoriesList.getItems().setAll(system.getCategories().values());
                 name.clear();
                 onDataChanged.run();
             } catch (RuntimeException ex) {
@@ -137,7 +142,7 @@ public class AdminCategoriesController {
             }
         });
 
-        VBox root = new VBox(8, new Label("Categories"), formatHint, categories,new Label("Create New Category"), name, add);
+        VBox root = new VBox(8, new Label("Categories"), formatHint, categoriesList,new Label("Create New Category"), name, add);
         root.setPadding(new Insets(10));
         return root;
     }
@@ -148,5 +153,11 @@ public class AdminCategoriesController {
         alert.setHeaderText(null);
         alert.setContentText(message == null || message.isBlank() ? "Unknown error" : message);
         alert.showAndWait();
+    }
+    public void refresh() {
+        if (categoriesList != null) {
+            categoriesList.getItems().setAll(system.getCategories().values());
+            categoriesList.refresh(); // forces re-render -> docCount recalculates
+        }
     }
 }
