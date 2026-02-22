@@ -9,6 +9,9 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import java.util.Optional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,8 +19,11 @@ import java.util.Set;
 public class AdminUsersController {
     private final MediaLabSystem system;
 
-    public AdminUsersController(MediaLabSystem system) {
+    private final Runnable onDataChanged;
+
+    public AdminUsersController(MediaLabSystem system, Runnable onDataChanged) {
         this.system = system;
+        this.onDataChanged = (onDataChanged != null) ? onDataChanged : () -> {};
     }
 
     public VBox createView(Admin admin) {
@@ -25,11 +31,89 @@ public class AdminUsersController {
         ListView<User> users = new ListView<>();
         users.getItems().setAll(system.listUsers(admin));
         users.setCellFactory(lv -> new ListCell<>() {
+            private final Label text = new Label();
+            private final Button editBtn = new Button("Edit");
+            private final Button deleteBtn = new Button("Delete");
+            private final Region spacer = new Region();
+            private final HBox row = new HBox(10, text, spacer, editBtn, deleteBtn);
+
+            {
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                editBtn.setOnAction(e -> {
+                    User target = getItem();
+                    if (target == null) return;
+
+                    // Popup: select categories (multi-select)
+                    ListView<Category> categoryList = new ListView<>();
+                    categoryList.getItems().setAll(system.getCategories().values());
+                    categoryList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+                    // show category name
+                    categoryList.setCellFactory(x -> new ListCell<>() {
+                        @Override
+                        protected void updateItem(Category item, boolean empty) {
+                            super.updateItem(item, empty);
+                            setText(empty || item == null ? null : item.getName());
+                        }
+                    });
+
+                    // pre-select current categories
+                    for (int i = 0; i < categoryList.getItems().size(); i++) {
+                        Category c = categoryList.getItems().get(i);
+                        if (target.getAllowedCategoryIds().contains(c.getId())) {
+                            categoryList.getSelectionModel().select(i);
+                        }
+                    }
+
+                    Dialog<Set<String>> dialog = new Dialog<>();
+                    dialog.setTitle("Edit User Categories");
+                    dialog.setHeaderText("User: " + target.getUsername() + " (" + target.getRoleName() + ")\nSelect allowed categories");
+
+                    ButtonType saveType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+                    dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+
+                    dialog.getDialogPane().setContent(categoryList);
+
+                    dialog.setResultConverter(bt -> {
+                        if (bt != saveType) return null;
+                        Set<String> ids = new HashSet<>();
+                        for (Category c : categoryList.getSelectionModel().getSelectedItems()) {
+                            ids.add(c.getId());
+                        }
+                        return ids;
+                    });
+
+                    Optional<Set<String>> result = dialog.showAndWait();
+                    if (result.isEmpty() || result.get() == null) return; // cancel
+
+                    try {
+                        system.updateUserCategories(admin, target.getUsername(), result.get());
+                        users.getItems().setAll(system.listUsers(admin));
+                        onDataChanged.run();
+                    } catch (RuntimeException ex) {
+                        showError(ex.getMessage());
+                    }
+                });
+
+                deleteBtn.setOnAction(e -> {
+                    User u = getItem();
+                    if (u == null) return;
+                    try {
+                        system.deleteUser(admin, u.getUsername());
+                        users.getItems().setAll(system.listUsers(admin));
+                        onDataChanged.run();
+                    } catch (RuntimeException ex) {
+                        showError(ex.getMessage());
+                    }
+                });
+            }
+
             @Override
             protected void updateItem(User item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
-                    setText(null);
+                    setGraphic(null);
                     return;
                 }
 
@@ -42,9 +126,11 @@ public class AdminUsersController {
                         .reduce((a, b) -> a + ", " + b)
                         .orElse("-");
 
-                setText(item.getUsername() + " (" + item.getRoleName() + ") - " +
+                text.setText(item.getUsername() + " (" + item.getRoleName() + ") - " +
                         item.getFirstName() + " " + item.getLastName() +
                         " | categories: " + categoriesText);
+
+                setGraphic(row);
             }
         });
         VBox.setVgrow(users, Priority.ALWAYS);
@@ -108,6 +194,7 @@ public class AdminUsersController {
 
                 // Refresh list
                 users.getItems().setAll(system.listUsers(admin));
+                onDataChanged.run();
 
                 // Clear inputs
                 first.clear();
@@ -131,6 +218,8 @@ public class AdminUsersController {
                 try {
                     system.deleteUser(admin, u.getUsername());
                     users.getItems().setAll(system.listUsers(admin));
+                    onDataChanged.run();
+
                 } catch (RuntimeException ex) {
                     showError(ex.getMessage());
                 }

@@ -40,9 +40,10 @@ public class MediaLabSystem {
         this.documentsById = new HashMap<>();
         this.authService = new AuthService(this.usersByUsername);
         this.userService = new UserService(this.usersByUsername, this.categoriesById);
-        this.categoryService = new CategoryService(this.usersByUsername, this.categoriesById, this.documentsById);
-        this.documentService = new DocumentService(this.usersByUsername, this.categoriesById, this.documentsById);
         this.followService = new FollowService(this.documentsById);
+        this.categoryService = new CategoryService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
+        this.documentService = new DocumentService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
+
         userService.bootstrapDefaultAdmin();
     }
 
@@ -61,9 +62,9 @@ public class MediaLabSystem {
         this.documentsById = new HashMap<>(documentsById);
         this.authService = new AuthService(this.usersByUsername);
         this.userService = new UserService(this.usersByUsername, this.categoriesById);
-        this.categoryService = new CategoryService(this.usersByUsername, this.categoriesById, this.documentsById);
-        this.documentService = new DocumentService(this.usersByUsername, this.categoriesById, this.documentsById);
         this.followService = new FollowService(this.documentsById);
+        this.categoryService = new CategoryService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
+        this.documentService = new DocumentService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
         if (!this.usersByUsername.containsKey("medialab")) {
             userService.bootstrapDefaultAdmin();
         }
@@ -78,6 +79,9 @@ public class MediaLabSystem {
         userService.deleteUser(adminActor, username);
     }
 
+    public void updateUserCategories(Admin adminActor, String targetUsername, Set<String> newAllowedCategoryIds) {
+        userService.updateUserCategories(adminActor, targetUsername, newAllowedCategoryIds);
+    }
     public List<User> listUsers(Admin adminActor) {
         return userService.listUsers(adminActor);
     }
@@ -126,10 +130,12 @@ public class MediaLabSystem {
         followService.unfollowDocument(actor, documentId);
     }
 
-    public List<String> getNotificationsOnLogin(User actor) {
-        return followService.getNotificationsOnLogin(actor);
+//    public List<String> getNotificationsOnLogin(User actor) {
+//        return followService.getNotificationsOnLogin(actor);
+//    }
+    public String buildLoginPopupMessage(User actor) {
+        return followService.buildPopupMessageAndConsume(actor, documentsById, categoriesById);
     }
-
     public void markDocumentSeen(User actor, String documentId) {
         followService.markDocumentSeen(actor, documentId, documentService);
     }

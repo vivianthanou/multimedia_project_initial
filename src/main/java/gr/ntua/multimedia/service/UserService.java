@@ -81,6 +81,71 @@ final class UserService {
         AccessControl.requireAdmin(adminActor, usersByUsername);
         return Collections.unmodifiableList(new ArrayList<>(usersByUsername.values()));
     }
+    void updateUserCategories(Admin adminActor, String targetUsername, Set<String> newAllowedCategoryIds) {
+        AccessControl.requireAdmin(adminActor, usersByUsername);
+        ValidationUtil.requireNonBlank(targetUsername, "targetUsername");
+
+        User existing = usersByUsername.get(targetUsername);
+        if (existing == null) {
+            throw new NotFoundException("User not found: " + targetUsername);
+        }
+
+        // Δεν επιτρέπουμε αλλαγές στον default admin (προαιρετικό αλλά καλό)
+        if ("medialab".equals(targetUsername)) {
+            throw new ValidationException("Default admin cannot be modified");
+        }
+
+        // Validate categories exist
+        Set<String> validatedAccess = new HashSet<>();
+        for (String categoryId : Optional.ofNullable(newAllowedCategoryIds).orElseGet(Set::of)) {
+            ValidationUtil.requireNonBlank(categoryId, "categoryId");
+            if (!categoriesById.containsKey(categoryId)) {
+                throw new NotFoundException("Category not found: " + categoryId);
+            }
+            validatedAccess.add(categoryId);
+        }
+
+        // SIMPLE/AUTHOR must have at least 1 category (ADMIN can be empty)
+        String role = existing.getRoleName();
+        if (!"ADMIN".equalsIgnoreCase(role) && validatedAccess.isEmpty()) {
+            throw new ValidationException("SIMPLE/AUTHOR users must have at least one allowed category.");
+        }
+
+        // Rebuild user object to avoid needing protected grant/revoke methods across packages
+        // Keep: username, passwordHash, names, followed docs, lastSeen map
+        User rebuilt = switch (role.toUpperCase()) {
+            case "ADMIN" -> new Admin(
+                    existing.getUsername(),
+                    existing.getPasswordHash(),
+                    existing.getFirstName(),
+                    existing.getLastName(),
+                    validatedAccess,
+                    existing.getFollowedDocumentIds(),
+                    existing.getLastSeenVersionByDocId()
+            );
+            case "AUTHOR" -> new Author(
+                    existing.getUsername(),
+                    existing.getPasswordHash(),
+                    existing.getFirstName(),
+                    existing.getLastName(),
+                    validatedAccess,
+                    existing.getFollowedDocumentIds(),
+                    existing.getLastSeenVersionByDocId()
+            );
+            default -> new SimpleUser(
+                    existing.getUsername(),
+                    existing.getPasswordHash(),
+                    existing.getFirstName(),
+                    existing.getLastName(),
+                    validatedAccess,
+                    existing.getFollowedDocumentIds(),
+                    existing.getLastSeenVersionByDocId()
+            );
+        };
+
+        usersByUsername.put(targetUsername, rebuilt);
+    }
+
 
     void bootstrapDefaultAdmin() {
         String hash = PasswordHasher.hash("medialab_2025");

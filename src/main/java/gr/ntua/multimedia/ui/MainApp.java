@@ -7,7 +7,9 @@ import gr.ntua.multimedia.ui.controller.DashboardController;
 import gr.ntua.multimedia.ui.controller.LoginController;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import javafx.scene.layout.Region;
 
 import java.nio.file.Path;
 
@@ -26,7 +28,7 @@ public class MainApp extends Application {
     private void showLogin(Stage stage) {
         LoginController loginController = new LoginController(system);
         Scene loginScene = new Scene(loginController.createView(user -> showDashboard(stage, user)), 420, 200);
-        stage.setTitle("MediaLab DMS");
+        stage.setTitle("MediaLab Documents");
         stage.setScene(loginScene);
         stage.show();
     }
@@ -43,6 +45,17 @@ public class MainApp extends Application {
                 900, 640
         );
         stage.setScene(dashboardScene);
+        String msg = system.buildLoginPopupMessage(user);
+        if (msg != null) {
+            javafx.application.Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Notification");
+                alert.setHeaderText(null);
+                alert.setContentText(msg);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.showAndWait();
+            });
+        }
     }
 
 

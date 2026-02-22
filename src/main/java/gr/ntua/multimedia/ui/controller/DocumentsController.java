@@ -18,9 +18,11 @@ import java.util.stream.Collectors;
 
 public class DocumentsController {
     private final MediaLabSystem system;
+    private final Runnable onDataChanged;
 
-    public DocumentsController(MediaLabSystem system) {
+    public DocumentsController(MediaLabSystem system, Runnable onDataChanged) {
         this.system = system;
+        this.onDataChanged = (onDataChanged != null) ? onDataChanged : () -> {};
     }
 
     public VBox createView(User user) {
@@ -115,11 +117,18 @@ public class DocumentsController {
 
         follow.setOnAction(e -> {
             Document d = docs.getSelectionModel().getSelectedItem();
-            if (d != null) system.followDocument(user, d.getId());
+            if (d != null) {
+                system.followDocument(user, d.getId());
+                onDataChanged.run();
+            }
         });
         unfollow.setOnAction(e -> {
             Document d = docs.getSelectionModel().getSelectedItem();
-            if (d != null) system.unfollowDocument(user, d.getId());
+            if (d != null) {
+                system.unfollowDocument(user, d.getId());
+                onDataChanged.run();
+            }
+
         });
 
         // ---- Search logic (AND, all optional)
@@ -224,7 +233,7 @@ public class DocumentsController {
                 // user is either Admin or Author (owner). Both can be cast to Author in your hierarchy.
                 system.updateDocumentText((Author) user, fresh.getId(), newText);
                 runSearch.run();
-
+                onDataChanged.run();
                 // refresh viewer if still selected
                 Document stillSelected = docs.getSelectionModel().getSelectedItem();
                 if (stillSelected != null && stillSelected.getId().equals(fresh.getId())) {
@@ -299,6 +308,7 @@ public class DocumentsController {
                 try {
                     system.createDocument(author, docTitle.getText(), selected.getId(), content.getText());
                     runSearch.run();
+                    onDataChanged.run();
                 } catch (RuntimeException ex) {
                     showError(ex.getMessage());
                 }
@@ -315,6 +325,7 @@ public class DocumentsController {
                     system.deleteDocument(author, d.getId());
                     viewer.clear();
                     runSearch.run();
+                    onDataChanged.run();
                 } catch (RuntimeException ex) {
                     showError(ex.getMessage());
                 }

@@ -7,9 +7,11 @@ import gr.ntua.multimedia.domain.Document;
 import gr.ntua.multimedia.domain.DocumentVersion;
 import gr.ntua.multimedia.domain.User;
 import gr.ntua.multimedia.exception.PermissionDeniedException;
+import gr.ntua.multimedia.exception.ValidationException;
 import gr.ntua.multimedia.util.DateTimeUtil;
 import gr.ntua.multimedia.util.IdUtil;
 import gr.ntua.multimedia.util.ValidationUtil;
+import gr.ntua.multimedia.service.FollowService;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,18 +22,31 @@ final class DocumentService {
     private final Map<String, User> usersByUsername;
     private final Map<String, Category> categoriesById;
     private final Map<String, Document> documentsById;
+    private final FollowService followService;
 
     DocumentService(Map<String, User> usersByUsername,
                     Map<String, Category> categoriesById,
-                    Map<String, Document> documentsById) {
+                    Map<String, Document> documentsById,
+                    FollowService followService) {
         this.usersByUsername = usersByUsername;
         this.categoriesById = categoriesById;
         this.documentsById = documentsById;
+        this.followService = followService;
     }
 
     Document createDocument(Author actor, String title, String categoryId, String initialContent) {
         AccessControl.requireAuthor(actor, usersByUsername);
         ValidationUtil.requireNonBlank(categoryId, "categoryId");
+        String normalizedTitle = title.trim();
+
+        boolean exists = documentsById.values().stream()
+                .anyMatch(d -> d.getCategoryId().equals(categoryId) &&
+                        d.getTitle().equalsIgnoreCase(normalizedTitle));
+
+        if (exists) {
+            throw new ValidationException("A document with the same title already exists in this category.");
+        }
+
         if (!actor.canCreateInCategory(categoryId)) {
             throw new PermissionDeniedException("No access to category: " + categoryId);
         }
@@ -57,6 +72,10 @@ final class DocumentService {
         if (!canDelete) {
             throw new PermissionDeniedException("Not allowed to delete document");
         }
+        Category c = categoriesById.get(doc.getCategoryId());
+        String catName = (c != null) ? c.getName() : "<deleted:" + doc.getCategoryId() + ">";
+
+        followService.recordDocumentRemovalForFollowers(doc.getId(), doc.getTitle(), catName, usersByUsername);
         documentsById.remove(doc.getId());
         usersByUsername.values().forEach(u -> u.unfollowDocument(doc.getId()));
     }

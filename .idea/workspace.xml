@@ -5,9 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="23a5ea6a-bd8e-4d3e-8c10-4ceb19cd84d3" name="Changes" comment="first attempt">
+      <change afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/RemovedDocInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/domain/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/domain/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/medialab.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/medialab.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/CategoryService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/CategoryService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/DocumentService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/DocumentService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/FollowService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/FollowService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/MainApp.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/MainApp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminUsersController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminUsersController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminUsersController$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminUsersController$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminUsersController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminUsersController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DashboardController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DashboardController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/CategoryService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/DocumentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/DocumentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/FollowService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/FollowService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/MediaLabSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/MediaLabSystem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/MainApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/MainApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminCategoriesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminCategoriesController.java" afterDir="false" />
@@ -127,7 +149,7 @@
       <workItem from="1771500206530" duration="3236000" />
       <workItem from="1771514673032" duration="4828000" />
       <workItem from="1771540770239" duration="2575000" />
-      <workItem from="1771700505620" duration="4778000" />
+      <workItem from="1771700505620" duration="13944000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <option name="closed" value="true" />
@@ -189,11 +211,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/org/example/Main.java</url>
           <line>13</line>
           <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/MainApp.java</url>
-          <line>43</line>
-          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
