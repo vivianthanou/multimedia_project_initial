@@ -73,6 +73,8 @@ public class DashboardController {
             // ✅ Live refresh: summary + categories list (so doc counts update)
             onDataChangedHolder[0] = () -> {
                 refreshSummary.run();
+                documentsController.refresh();
+                adminUsersController.refresh();
                 adminCategoriesController.refresh();
             };
         } else {

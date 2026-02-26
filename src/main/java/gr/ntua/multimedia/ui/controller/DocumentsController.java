@@ -20,14 +20,30 @@ public class DocumentsController {
     private final MediaLabSystem system;
     private final Runnable onDataChanged;
 
+    private User currentUser;
+
+    private ComboBox<Category> categoryFilterBox;
+    private TextField titleFilter;
+    private TextField authorFilter;
+
+    private ListView<Document> searchResults;
+    private ListView<Document> followedList;
+
+    private ComboBox<Category> createCategoryBox; // only for Author/Admin
+    private TextField createDocTitle;
+    private TextArea createDocContent;
+
+    private Runnable runSearchHolder = () -> {};
+    private Runnable refreshFollowedListHolder = () -> {};
+
     public DocumentsController(MediaLabSystem system, Runnable onDataChanged) {
         this.system = system;
         this.onDataChanged = (onDataChanged != null) ? onDataChanged : () -> {};
     }
 
     public VBox createView(User user) {
+        this.currentUser = user;
 
-        // Shared format hint
         Label formatHint = new Label("Format: Title | Author | Category | Created At | Version | Document ID");
         formatHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #555;");
 
@@ -36,18 +52,11 @@ public class DocumentsController {
         // =========================================================
         // 1) SEARCH DOCUMENTS PANE
         // =========================================================
-        ComboBox<Category> categoryFilterBox = new ComboBox<>();
+        categoryFilterBox = new ComboBox<>();
         categoryFilterBox.setPromptText("All categories");
         categoryFilterBox.getItems().add(null); // null => All
 
-        List<Category> filterCategories = system.getCategories().values().stream()
-                .filter(c -> (user instanceof Admin) || user.canAccessCategory(c.getId()))
-                .sorted(Comparator.comparing(Category::getName, String.CASE_INSENSITIVE_ORDER))
-                .toList();
-
-        categoryFilterBox.getItems().addAll(filterCategories);
-        categoryFilterBox.getSelectionModel().selectFirst();
-
+        // Cell factories (once)
         categoryFilterBox.setCellFactory(lv -> new ListCell<>() {
             @Override protected void updateItem(Category item, boolean empty) {
                 super.updateItem(item, empty);
@@ -65,22 +74,24 @@ public class DocumentsController {
             }
         });
 
-        TextField titleFilter = new TextField();
+        titleFilter = new TextField();
         titleFilter.setPromptText("Title contains...");
 
-        TextField authorFilter = new TextField();
+        authorFilter = new TextField();
         authorFilter.setPromptText("Author name contains (first last)...");
 
         Button searchBtn = new Button("Search");
 
-        ListView<Document> searchResults = new ListView<>();
+        searchResults = new ListView<>();
         VBox.setVgrow(searchResults, Priority.ALWAYS);
         searchResults.setCellFactory(lv -> docCellFactory(dtf));
 
         Runnable runSearch = () -> {
             try {
                 Category selectedCategory = categoryFilterBox.getValue(); // null => all
-                Optional<String> categoryIdOpt = (selectedCategory == null) ? Optional.empty() : Optional.of(selectedCategory.getId());
+                Optional<String> categoryIdOpt = (selectedCategory == null)
+                        ? Optional.empty()
+                        : Optional.of(selectedCategory.getId());
 
                 Optional<String> titleOpt = Optional.ofNullable(titleFilter.getText())
                         .map(String::trim)
@@ -90,10 +101,8 @@ public class DocumentsController {
                         .map(String::trim)
                         .filter(s -> !s.isBlank());
 
-                // Service search already ANDs category + title
-                List<Document> base = system.search(user, categoryIdOpt, titleOpt, Optional.empty());
+                List<Document> base = system.search(currentUser, categoryIdOpt, titleOpt, Optional.empty());
 
-                // AND author full-name filter on top
                 if (authorNameOpt.isPresent()) {
                     String q = authorNameOpt.get().toLowerCase();
                     base = base.stream()
@@ -108,11 +117,11 @@ public class DocumentsController {
                 }
 
                 searchResults.getItems().setAll(base);
-
             } catch (RuntimeException ex) {
                 showError(ex.getMessage());
             }
         };
+        runSearchHolder = runSearch;
         searchBtn.setOnAction(e -> runSearch.run());
 
         Button followBtn = new Button("Follow selected");
@@ -123,47 +132,46 @@ public class DocumentsController {
                 return;
             }
             try {
-                system.followDocument(user, d.getId());
-                refreshFollowedList(user); // defined below via array wrapper
+                system.followDocument(currentUser, d.getId());
+                refreshFollowedListHolder.run();
                 onDataChanged.run();
             } catch (RuntimeException ex) {
                 showError(ex.getMessage());
             }
         });
 
-        Button viewBtn = new Button("View document"); // (better than "See document")
+        Button viewBtn = new Button("View document");
         viewBtn.setOnAction(e -> {
             Document d = searchResults.getSelectionModel().getSelectedItem();
             if (d == null) {
                 showError("Please select a document first.");
                 return;
             }
-            showDocumentPopup(user, d);
+            showDocumentPopup(currentUser, d);
         });
 
-        Button editBtn = new Button("Edit selected (content)");
+        Button editBtn = new Button("Edit selected");
         Button deleteBtn = new Button("Delete selected");
         editBtn.setDisable(true);
         deleteBtn.setDisable(true);
 
-        // Enable edit/delete only for Admin or owning Author
         searchResults.getSelectionModel().selectedItemProperty().addListener((a, b, doc) -> {
-            boolean canEdit = (doc != null) && canEdit(user, doc);
+            boolean canEdit = (doc != null) && canEdit(currentUser, doc);
             editBtn.setDisable(!canEdit);
-            deleteBtn.setDisable(!canEdit); // delete uses same rule as before (owner author or admin)
+            deleteBtn.setDisable(!canEdit);
         });
 
         editBtn.setOnAction(e -> {
             Document doc = searchResults.getSelectionModel().getSelectedItem();
             if (doc == null) return;
 
-            if (!canEdit(user, doc)) {
+            if (!canEdit(currentUser, doc)) {
                 showError("You are not allowed to edit this document.");
                 return;
             }
-            showEditPopup(user, doc, () -> {
-                runSearch.run();
-                refreshFollowedList(user);
+            showEditPopup(currentUser, doc, () -> {
+                runSearchHolder.run();
+                refreshFollowedListHolder.run();
                 onDataChanged.run();
             });
         });
@@ -172,12 +180,11 @@ public class DocumentsController {
             Document doc = searchResults.getSelectionModel().getSelectedItem();
             if (doc == null) return;
 
-            if (!(user instanceof Author)) {
+            if (!(currentUser instanceof Author)) {
                 showError("Only Author/Admin can delete documents.");
                 return;
             }
 
-            // Confirm delete
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
             confirm.setTitle("Delete Document");
             confirm.setHeaderText("Delete document '" + doc.getTitle() + "'?");
@@ -190,9 +197,9 @@ public class DocumentsController {
             if (choice.isEmpty() || choice.get() != deleteType) return;
 
             try {
-                system.deleteDocument((Author) user, doc.getId());
-                runSearch.run();
-                refreshFollowedList(user);
+                system.deleteDocument((Author) currentUser, doc.getId());
+                runSearchHolder.run();
+                refreshFollowedListHolder.run();
                 onDataChanged.run();
             } catch (RuntimeException ex) {
                 showError(ex.getMessage());
@@ -224,7 +231,7 @@ public class DocumentsController {
         Label followingHint = new Label("Documents you Follow");
         followingHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #555;");
 
-        ListView<Document> followedList = new ListView<>();
+        followedList = new ListView<>();
         VBox.setVgrow(followedList, Priority.ALWAYS);
         followedList.setCellFactory(lv -> docCellFactory(dtf));
 
@@ -236,8 +243,8 @@ public class DocumentsController {
                 return;
             }
             try {
-                system.unfollowDocument(user, d.getId());
-                refreshFollowedList(user);
+                system.unfollowDocument(currentUser, d.getId());
+                refreshFollowedListHolder.run();
                 onDataChanged.run();
             } catch (RuntimeException ex) {
                 showError(ex.getMessage());
@@ -251,7 +258,7 @@ public class DocumentsController {
                 showError("Please select a document first.");
                 return;
             }
-            showDocumentPopup(user, d);
+            showDocumentPopup(currentUser, d);
         });
 
         VBox followedPaneContent = new VBox(
@@ -273,51 +280,45 @@ public class DocumentsController {
         // =========================================================
         TitledPane createPane = null;
 
-        if (user instanceof Author author) {
-            TextField docTitle = new TextField();
-            docTitle.setPromptText("Title");
+        if (currentUser instanceof Author author) {
+            createDocTitle = new TextField();
+            createDocTitle.setPromptText("Title");
 
-            ComboBox<Category> categoryBox = new ComboBox<>();
-            categoryBox.setPromptText("Select Category");
-            categoryBox.getItems().setAll(
-                    system.getCategories().values().stream()
-                            .filter(c -> author.canAccessCategory(c.getId()))
-                            .sorted(Comparator.comparing(Category::getName, String.CASE_INSENSITIVE_ORDER))
-                            .toList()
-            );
-            categoryBox.setCellFactory(lv -> new ListCell<>() {
+            createCategoryBox = new ComboBox<>();
+            createCategoryBox.setPromptText("Select Category");
+            createCategoryBox.setCellFactory(lv -> new ListCell<>() {
                 @Override protected void updateItem(Category item, boolean empty) {
                     super.updateItem(item, empty);
                     setText(empty || item == null ? null : item.getName());
                 }
             });
-            categoryBox.setButtonCell(new ListCell<>() {
+            createCategoryBox.setButtonCell(new ListCell<>() {
                 @Override protected void updateItem(Category item, boolean empty) {
                     super.updateItem(item, empty);
                     setText(empty || item == null ? null : item.getName());
                 }
             });
 
-            TextArea content = new TextArea();
-            content.setPromptText("Content");
-            content.setWrapText(true);
-            content.setPrefRowCount(8);
+            createDocContent = new TextArea();
+            createDocContent.setPromptText("Content");
+            createDocContent.setWrapText(true);
+            createDocContent.setPrefRowCount(8);
 
             Button createBtn = new Button("Create document");
             createBtn.setOnAction(e -> {
-                Category selected = categoryBox.getValue();
+                Category selected = createCategoryBox.getValue();
                 if (selected == null) {
                     showError("Please select a category.");
                     return;
                 }
                 try {
-                    system.createDocument(author, docTitle.getText(), selected.getId(), content.getText());
-                    docTitle.clear();
-                    content.clear();
-                    categoryBox.getSelectionModel().clearSelection();
+                    system.createDocument(author, createDocTitle.getText(), selected.getId(), createDocContent.getText());
+                    createDocTitle.clear();
+                    createDocContent.clear();
+                    createCategoryBox.getSelectionModel().clearSelection();
 
-                    runSearch.run();
-                    refreshFollowedList(user);
+                    runSearchHolder.run();
+                    refreshFollowedListHolder.run();
                     onDataChanged.run();
                 } catch (RuntimeException ex) {
                     showError(ex.getMessage());
@@ -328,11 +329,11 @@ public class DocumentsController {
                     8,
                     new Label("Create New Document"),
                     new Label("Title"),
-                    docTitle,
+                    createDocTitle,
                     new Label("Category"),
-                    categoryBox,
+                    createCategoryBox,
                     new Label("Content"),
-                    content,
+                    createDocContent,
                     createBtn
             );
             createPaneContent.setPadding(new Insets(8));
@@ -343,7 +344,7 @@ public class DocumentsController {
         }
 
         // =========================================================
-        // Root layout: 3 non-closable panes (always visible)
+        // Root layout
         // =========================================================
         VBox root = new VBox(12);
         root.setPadding(new Insets(10));
@@ -351,35 +352,86 @@ public class DocumentsController {
         root.getChildren().addAll(searchPane, followedPane);
         if (createPane != null) root.getChildren().add(createPane);
 
-        // initial load
-        runSearch.run();
-
-        // refresh followed list function (needs access to followedList)
-        Runnable refreshFollowed = () -> {
+        // followed list refresh function
+        refreshFollowedListHolder = () -> {
             List<Document> docs = new ArrayList<>();
-            for (String docId : user.getFollowedDocumentIds()) {
+            for (String docId : currentUser.getFollowedDocumentIds()) {
                 Document d = system.getDocuments().get(docId);
                 if (d == null) continue;
-                // only show if user can access category (admin can)
-                if (user instanceof Admin || user.canAccessCategory(d.getCategoryId())) {
+                if (currentUser instanceof Admin || currentUser.canAccessCategory(d.getCategoryId())) {
                     docs.add(d);
                 }
             }
             followedList.getItems().setAll(docs);
         };
 
-        // store into array so lambdas above can call it before it's assigned (simple trick)
-        this.refreshFollowedListHolder = refreshFollowed;
-        refreshFollowed.run();
+        // initial data load
+        reloadCategoryChoices();
+        runSearchHolder.run();
+        refreshFollowedListHolder.run();
 
         return root;
     }
 
-    // ---------- Helpers ----------
+    // ===== LIVE refresh helpers =====
 
-    // Holder to call refresh from earlier lambdas (initialized later)
-    private Runnable refreshFollowedListHolder = () -> {};
-    private void refreshFollowedList(User user) { refreshFollowedListHolder.run(); }
+    private void reloadCategoryChoices() {
+        if (currentUser == null || categoryFilterBox == null) return;
+
+        // keep current selection if possible
+        Category selected = categoryFilterBox.getValue();
+
+        // rebuild filter categories
+        categoryFilterBox.getItems().clear();
+        categoryFilterBox.getItems().add(null);
+
+        List<Category> filterCategories = system.getCategories().values().stream()
+                .filter(c -> (currentUser instanceof Admin) || currentUser.canAccessCategory(c.getId()))
+                .sorted(Comparator.comparing(Category::getName, String.CASE_INSENSITIVE_ORDER))
+                .toList();
+
+        categoryFilterBox.getItems().addAll(filterCategories);
+
+        if (selected == null) {
+            categoryFilterBox.getSelectionModel().selectFirst();
+        } else {
+            Category match = filterCategories.stream()
+                    .filter(c -> c.getId().equals(selected.getId()))
+                    .findFirst()
+                    .orElse(null);
+            categoryFilterBox.getSelectionModel().select(match);
+        }
+
+        // rebuild create categories (author/admin only)
+        if (createCategoryBox != null && currentUser instanceof Author author) {
+            Category prev = createCategoryBox.getValue();
+
+            List<Category> allowed = system.getCategories().values().stream()
+                    .filter(c -> author.canAccessCategory(c.getId()))
+                    .sorted(Comparator.comparing(Category::getName, String.CASE_INSENSITIVE_ORDER))
+                    .toList();
+
+            createCategoryBox.getItems().setAll(allowed);
+
+            if (prev != null) {
+                Category match = allowed.stream()
+                        .filter(c -> c.getId().equals(prev.getId()))
+                        .findFirst()
+                        .orElse(null);
+                createCategoryBox.getSelectionModel().select(match);
+            }
+        }
+    }
+
+    public void refresh() {
+        reloadCategoryChoices();
+        if (runSearchHolder != null) runSearchHolder.run();
+        if (refreshFollowedListHolder != null) refreshFollowedListHolder.run();
+        if (searchResults != null) searchResults.refresh();
+        if (followedList != null) followedList.refresh();
+    }
+
+    // ---------- existing helpers ----------
 
     private Label formatHintCopy() {
         Label l = new Label("Format: Title | Author | Category | Created At | Version | Document ID");
@@ -427,19 +479,16 @@ public class DocumentsController {
 
     private void showDocumentPopup(User user, Document doc) {
         try {
-            // Ensure access check
             Document fresh = system.getDocumentForViewing(user, doc.getId());
 
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("View Document");
             dialog.setHeaderText(fresh.getTitle());
-
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
             VBox contentBox = new VBox(8);
             contentBox.setPadding(new Insets(10));
 
-            // Version selector for Author/Admin (up to 3 visible), Simple sees only latest
             List<DocumentVersion> visible = system.getVisibleVersions(user, fresh.getId());
 
             Label versionLabel = new Label();
@@ -481,9 +530,7 @@ public class DocumentsController {
                 });
 
                 contentBox.getChildren().addAll(new Label("Select version:"), versionBox, versionLabel, textArea);
-
             } else {
-                // Simple user: only latest (visible will contain 1 element)
                 DocumentVersion latest = visible.isEmpty() ? null : visible.get(0);
                 if (latest != null) {
                     versionLabel.setText("Showing latest version v" + latest.getVersionNumber());
@@ -496,7 +543,6 @@ public class DocumentsController {
 
             dialog.getDialogPane().setContent(contentBox);
 
-            // Mark seen when user views
             system.markDocumentSeen(user, fresh.getId());
             onDataChanged.run();
 

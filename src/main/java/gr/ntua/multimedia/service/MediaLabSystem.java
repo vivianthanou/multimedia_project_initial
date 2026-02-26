@@ -161,4 +161,14 @@ public class MediaLabSystem {
     public Map<String, Document> getDocuments() {
         return Collections.unmodifiableMap(new HashMap<>(documentsById));
     }
+
+    public record RemovedDocInfo(String title, String categoryName) {}
+
+    public Map<String, List<RemovedDocInfo>> exportPendingRemoved() {
+        return followService.exportPendingRemovedForStorage();
+    }
+
+    public void importPendingRemoved(Map<String, List<RemovedDocInfo>> data) {
+        followService.importPendingRemovedForStorage(data);
+    }
 }

@@ -39,8 +39,84 @@ final class SimpleJson {
         throw new IllegalArgumentException("Unsupported JSON type: " + value.getClass());
     }
 
+    static String stringifyPretty(Object value) {
+        StringBuilder sb = new StringBuilder();
+        writePretty(value, sb, 0);
+        return sb.toString();
+    }
+
+    private static void writePretty(Object value, StringBuilder sb, int level) {
+        if (value == null) { sb.append("null"); return; }
+
+        if (value instanceof String s) {
+            sb.append('"').append(escape(s)).append('"');
+            return;
+        }
+        if (value instanceof Number || value instanceof Boolean) {
+            sb.append(value);
+            return;
+        }
+        if (value instanceof Map<?, ?> map) {
+            sb.append("{");
+            if (!map.isEmpty()) sb.append("\n");
+            boolean first = true;
+            for (var e : map.entrySet()) {
+                if (!first) sb.append(",\n");
+                first = false;
+                indent(sb, level + 1);
+                sb.append('"').append(escape(String.valueOf(e.getKey()))).append('"').append(": ");
+                writePretty(e.getValue(), sb, level + 1);
+            }
+            if (!map.isEmpty()) {
+                sb.append("\n");
+                indent(sb, level);
+            }
+            sb.append("}");
+            return;
+        }
+        if (value instanceof List<?> list) {
+            sb.append("[");
+            if (!list.isEmpty()) sb.append("\n");
+            for (int i = 0; i < list.size(); i++) {
+                if (i > 0) sb.append(",\n");
+                indent(sb, level + 1);
+                writePretty(list.get(i), sb, level + 1);
+            }
+            if (!list.isEmpty()) {
+                sb.append("\n");
+                indent(sb, level);
+            }
+            sb.append("]");
+            return;
+        }
+
+        throw new IllegalArgumentException("Unsupported JSON type: " + value.getClass());
+    }
+
+    private static void indent(StringBuilder sb, int level) {
+        sb.append("  ".repeat(level)); // 2 spaces
+    }
+
     private static String escape(String s) {
-        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n");
+        StringBuilder sb = new StringBuilder(s.length() + 16);
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            switch (c) {
+                case '\\' -> sb.append("\\\\");
+                case '"'  -> sb.append("\\\"");
+                case '\n' -> sb.append("\\n");
+                case '\t' -> sb.append("\\t");
+                case '\r' -> sb.append("\\r");
+                case '\b' -> sb.append("\\b");
+                case '\f' -> sb.append("\\f");
+                default -> {
+                    // escape any other control chars (0x00-0x1F)
+                    if (c < 0x20) sb.append(String.format("\\u%04x", (int) c));
+                    else sb.append(c);
+                }
+            }
+        }
+        return sb.toString();
     }
 
     private static final class Parser {
@@ -102,8 +178,22 @@ final class SimpleJson {
                 if (c == '"') break;
                 if (c == '\\') {
                     char n = s.charAt(i++);
-                    if (n == 'n') sb.append('\n');
-                    else sb.append(n);
+                    switch (n) {
+                        case 'n' -> sb.append('\n');
+                        case 't' -> sb.append('\t');
+                        case 'r' -> sb.append('\r');
+                        case 'b' -> sb.append('\b');
+                        case 'f' -> sb.append('\f');
+                        case '"' -> sb.append('"');
+                        case '\\' -> sb.append('\\');
+                        case 'u' -> {
+                            // parse 4 hex digits
+                            int code = Integer.parseInt(s.substring(i, i + 4), 16);
+                            sb.append((char) code);
+                            i += 4;
+                        }
+                        default -> sb.append(n);
+                    }
                 } else sb.append(c);
             }
             return sb.toString();

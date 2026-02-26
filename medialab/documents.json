@@ -1,0 +1,165 @@
+[
+  {
+    "createdAt": "2026-02-19T19:22:16.959305400",
+    "versions": [
+      {
+        "createdAt": "2026-02-19T19:22:16.959305400",
+        "versionNumber": 1,
+        "content": "\\tBode diagrams.\nThey tell us information about amplitude.\n\\tAnd frequency"
+      }
+    ],
+    "authorUsername": "manos",
+    "id": "78495ae0-98da-4532-b440-8264399dbc24",
+    "title": "Bode",
+    "categoryId": "2911cced-7d92-47f5-97d1-1e6553a0a55f"
+  },
+  {
+    "createdAt": "2026-02-24T20:36:40.245720",
+    "versions": [
+      {
+        "createdAt": "2026-02-24T20:36:40.245720",
+        "versionNumber": 1,
+        "content": "222\n    2222\n222\n22"
+      },
+      {
+        "createdAt": "2026-02-24T20:37:07.359866",
+        "versionNumber": 2,
+        "content": "222\n    2222\n222\n22\n2\n2"
+      },
+      {
+        "createdAt": "2026-02-26T14:07:19.981037",
+        "versionNumber": 3,
+        "content": "222\n    2222\n222\n22"
+      },
+      {
+        "createdAt": "2026-02-26T14:07:36.664469600",
+        "versionNumber": 4,
+        "content": "222\n    2222\n222"
+      }
+    ],
+    "authorUsername": "medialab",
+    "id": "9a9d007e-651f-4516-a7e9-34e2278b1671",
+    "title": "222",
+    "categoryId": "d61b6eb1-1ac4-4dfd-bc59-827bb27c3f8d"
+  },
+  {
+    "createdAt": "2026-02-26T14:09:55.316423200",
+    "versions": [
+      {
+        "createdAt": "2026-02-26T14:09:55.316423200",
+        "versionNumber": 1,
+        "content": "multimedia"
+      },
+      {
+        "createdAt": "2026-02-26T14:12:33.699635300",
+        "versionNumber": 2,
+        "content": "multimedia\n1"
+      }
+    ],
+    "authorUsername": "vv",
+    "id": "a60002c7-f66f-467b-8443-f13af6c15267",
+    "title": "multimedia 1",
+    "categoryId": "1ecf5033-df3b-484a-93d7-54a2e2484887"
+  },
+  {
+    "createdAt": "2026-02-26T14:09:43.908858400",
+    "versions": [
+      {
+        "createdAt": "2026-02-26T14:09:43.908858400",
+        "versionNumber": 1,
+        "content": "multimedia 2"
+      }
+    ],
+    "authorUsername": "vv",
+    "id": "0b78d1b4-75ef-4c6c-b6cd-84f13a2b8825",
+    "title": "multimedia 2 ",
+    "categoryId": "5d808f36-d4c9-409b-91f3-9955b2ce1417"
+  },
+  {
+    "createdAt": "2026-02-24T20:51:52.401855",
+    "versions": [
+      {
+        "createdAt": "2026-02-24T20:51:52.401855",
+        "versionNumber": 1,
+        "content": "valia"
+      }
+    ],
+    "authorUsername": "stamou",
+    "id": "8116c773-0164-4b17-a15a-296ca14471d2",
+    "title": "valia",
+    "categoryId": "570915dd-5166-415a-9810-509d44f61968"
+  },
+  {
+    "createdAt": "2026-02-22T17:34:03.947320900",
+    "versions": [
+      {
+        "createdAt": "2026-02-22T17:34:03.947320900",
+        "versionNumber": 1,
+        "content": "ffffffffff\nfffffff\n\\tfffffffff\nfffffffffff"
+      },
+      {
+        "createdAt": "2026-02-22T17:34:29.053336800",
+        "versionNumber": 2,
+        "content": "ffffffffff\nfffffff\n\\tfffffffff\nfffffffffff\n22222222222"
+      },
+      {
+        "createdAt": "2026-02-22T17:34:37.980413800",
+        "versionNumber": 3,
+        "content": "ffffffffff\nfffffff\n\\tfffffffff\nfffffffffff\n22222222222\n333333333333"
+      },
+      {
+        "createdAt": "2026-02-22T17:34:56.333263700",
+        "versionNumber": 4,
+        "content": "ffffffffff\nfffffff\n\\tfffffffff\nfffffffffff\n22222222222\n333333333333\n44444444444"
+      },
+      {
+        "createdAt": "2026-02-22T17:36:34.723819600",
+        "versionNumber": 5,
+        "content": "ffffffffff\nfffffff\n\\tfffffffff\nfffffffffff\n22222222222\n333333333333\n44444444444\n5"
+      }
+    ],
+    "authorUsername": "medialab",
+    "id": "6cde2d19-cd25-4e94-9175-891cf5a1cc6a",
+    "title": "static",
+    "categoryId": "2821d2eb-0847-456b-99ad-46d73ee96ef8"
+  },
+  {
+    "createdAt": "2026-02-24T20:46:05.757941700",
+    "versions": [
+      {
+        "createdAt": "2026-02-24T20:46:05.757941700",
+        "versionNumber": 1,
+        "content": "cnn\n\ndnn\n\ngnn"
+      },
+      {
+        "createdAt": "2026-02-24T20:46:25.904913700",
+        "versionNumber": 2,
+        "content": "cnn\n\ndnn\n\ngnn\n\n."
+      },
+      {
+        "createdAt": "2026-02-24T20:47:09.349658200",
+        "versionNumber": 3,
+        "content": "cnn\n\ndnn\n\ngnn\n\n.\n\n."
+      },
+      {
+        "createdAt": "2026-02-24T20:47:24.685873600",
+        "versionNumber": 4,
+        "content": "cnn\n\ndnn\n\ngnn"
+      },
+      {
+        "createdAt": "2026-02-24T20:47:36.320386500",
+        "versionNumber": 5,
+        "content": "    cnn\n\n    dnn\n\n    gnn"
+      },
+      {
+        "createdAt": "2026-02-24T20:51:33.066988500",
+        "versionNumber": 6,
+        "content": "    cnn\n\n    dnn\n\n    gnn\n\nvalia"
+      }
+    ],
+    "authorUsername": "stamou",
+    "id": "07d2c5f4-6907-408d-adf7-2e074bb69bb2",
+    "title": "CNN",
+    "categoryId": "570915dd-5166-415a-9810-509d44f61968"
+  }
+]

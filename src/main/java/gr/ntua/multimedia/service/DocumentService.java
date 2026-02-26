@@ -38,7 +38,6 @@ final class DocumentService {
         AccessControl.requireAuthor(actor, usersByUsername);
         ValidationUtil.requireNonBlank(categoryId, "categoryId");
         String normalizedTitle = title.trim();
-
         boolean exists = documentsById.values().stream()
                 .anyMatch(d -> d.getCategoryId().equals(categoryId) &&
                         d.getTitle().equalsIgnoreCase(normalizedTitle));
@@ -51,7 +50,8 @@ final class DocumentService {
             throw new PermissionDeniedException("No access to category: " + categoryId);
         }
         AccessControl.findCategory(categoryId, categoriesById);
-        Document doc = new Document(IdUtil.newId(), title, categoryId, actor.getUsername(), DateTimeUtil.now(), initialContent);
+        String normalizedContent = ValidationUtil.normalizeParagraphText(initialContent);
+        Document doc = new Document(IdUtil.newId(), title, categoryId, actor.getUsername(), DateTimeUtil.now(), normalizedContent);
         documentsById.put(doc.getId(), doc);
         return doc;
     }
@@ -62,7 +62,8 @@ final class DocumentService {
         if (!(actor.canEditDocument(doc) || actor instanceof Admin)) {
             throw new PermissionDeniedException("Not allowed to edit document");
         }
-        doc.addNewVersion(newContent, DateTimeUtil.now());
+        String normalizedContent = ValidationUtil.normalizeParagraphText(newContent);
+        doc.addNewVersion(normalizedContent, DateTimeUtil.now());
     }
 
     void deleteDocument(Author actor, String documentId) {

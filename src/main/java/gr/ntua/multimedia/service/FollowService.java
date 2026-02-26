@@ -21,6 +21,7 @@ final class FollowService {
     void followDocument(User actor, String documentId, DocumentService documentService) {
         Document doc = documentService.getDocumentForViewing(actor, documentId);
         actor.followDocument(doc.getId());
+        actor.markSeen(doc.getId(), doc.getLatestVersionNumber());
     }
 
     void unfollowDocument(User actor, String documentId) {
@@ -90,5 +91,30 @@ final class FollowService {
     void markDocumentSeen(User actor, String documentId, DocumentService documentService) {
         Document doc = documentService.getDocumentForViewing(actor, documentId);
         actor.markSeen(doc.getId(), doc.getLatestVersionNumber());
+    }
+
+    Map<String, List<MediaLabSystem.RemovedDocInfo>> exportPendingRemovedForStorage() {
+        Map<String, List<MediaLabSystem.RemovedDocInfo>> out = new HashMap<>();
+        for (var e : pendingRemovedByUsername.entrySet()) {
+            List<MediaLabSystem.RemovedDocInfo> list = new ArrayList<>();
+            for (RemovedDocInfo info : e.getValue()) {
+                list.add(new MediaLabSystem.RemovedDocInfo(info.title, info.categoryName));
+            }
+            out.put(e.getKey(), list);
+        }
+        return out;
+    }
+
+    void importPendingRemovedForStorage(Map<String, List<MediaLabSystem.RemovedDocInfo>> data) {
+        pendingRemovedByUsername.clear();
+        if (data == null) return;
+
+        for (var e : data.entrySet()) {
+            List<RemovedDocInfo> list = new ArrayList<>();
+            for (MediaLabSystem.RemovedDocInfo info : e.getValue()) {
+                list.add(new RemovedDocInfo(info.title(), info.categoryName()));
+            }
+            pendingRemovedByUsername.put(e.getKey(), list);
+        }
     }
 }

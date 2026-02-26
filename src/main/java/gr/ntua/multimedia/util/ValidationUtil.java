@@ -15,4 +15,11 @@ public final class ValidationUtil {
     public static void requireNonNull(Object obj, String fieldName) {
         Objects.requireNonNull(obj, fieldName + " cannot be null");
     }
+
+    public static String normalizeParagraphText(String text) {
+        if (text == null) return "";
+        String t = text.replace("\r\n", "\n").replace("\r", "\n");
+        t = t.replace("\t", "    ");
+        return t;
+    }
 }

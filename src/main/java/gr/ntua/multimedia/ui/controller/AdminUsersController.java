@@ -20,6 +20,9 @@ public class AdminUsersController {
     private final MediaLabSystem system;
     private final Runnable onDataChanged;
 
+    // ✅ keep reference so we can refresh categories live
+    private ListView<Category> categoriesList;
+
     public AdminUsersController(MediaLabSystem system, Runnable onDataChanged) {
         this.system = system;
         this.onDataChanged = (onDataChanged != null) ? onDataChanged : () -> {};
@@ -48,10 +51,9 @@ public class AdminUsersController {
                     User target = getItem();
                     if (target == null) return;
 
-                    // --- UI fields (optional updates)
                     TextField newUsernameField = new TextField();
                     newUsernameField.setPromptText("New username (leave empty to keep)");
-                    newUsernameField.setText(target.getUsername()); // prefill for convenience
+                    newUsernameField.setText(target.getUsername());
 
                     ComboBox<String> roleBox = new ComboBox<>();
                     roleBox.getItems().addAll("SIMPLE", "AUTHOR", "ADMIN");
@@ -61,7 +63,7 @@ public class AdminUsersController {
                     PasswordField newPasswordField = new PasswordField();
                     newPasswordField.setPromptText("New password (leave empty to keep)");
 
-                    // Categories multi-select
+                    // Categories multi-select (built fresh each time, so it's already up to date)
                     ListView<Category> categoryList = new ListView<>();
                     categoryList.getItems().setAll(system.getCategories().values());
                     categoryList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -75,7 +77,6 @@ public class AdminUsersController {
                         }
                     });
 
-                    // Preselect current categories
                     for (int i = 0; i < categoryList.getItems().size(); i++) {
                         Category c = categoryList.getItems().get(i);
                         if (target.getAllowedCategoryIds().contains(c.getId())) {
@@ -109,7 +110,6 @@ public class AdminUsersController {
                     Optional<ButtonType> choice = dialog.showAndWait();
                     if (choice.isEmpty() || choice.get() != saveType) return;
 
-                    // Build optionals: update only what changed
                     String enteredUsername = newUsernameField.getText() == null ? "" : newUsernameField.getText().trim();
                     Optional<String> newUsernameOpt =
                             enteredUsername.isBlank() || enteredUsername.equals(target.getUsername())
@@ -190,12 +190,12 @@ public class AdminUsersController {
             }
         });
 
-        // ----- Create user form (kept from your version)
-        ListView<Category> categories = new ListView<>();
-        categories.getItems().setAll(system.getCategories().values());
-        categories.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        categories.setPrefHeight(140);
-        categories.setCellFactory(lv -> new ListCell<>() {
+        // ----- Create user form
+        categoriesList = new ListView<>();
+        categoriesList.getItems().setAll(system.getCategories().values());
+        categoriesList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        categoriesList.setPrefHeight(140);
+        categoriesList.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(Category item, boolean empty) {
                 super.updateItem(item, empty);
@@ -218,7 +218,7 @@ public class AdminUsersController {
                 String roleValue = role.getText() == null ? "" : role.getText().trim().toUpperCase();
 
                 Set<String> allowedCategoryIds = new HashSet<>();
-                for (Category c : categories.getSelectionModel().getSelectedItems()) {
+                for (Category c : categoriesList.getSelectionModel().getSelectedItems()) {
                     allowedCategoryIds.add(c.getId());
                 }
 
@@ -241,7 +241,7 @@ public class AdminUsersController {
                 onDataChanged.run();
 
                 first.clear(); last.clear(); role.clear(); username.clear(); password.clear();
-                categories.getSelectionModel().clearSelection();
+                categoriesList.getSelectionModel().clearSelection();
 
             } catch (ValidationException ex) {
                 showError(ex.getMessage());
@@ -259,12 +259,19 @@ public class AdminUsersController {
                 new Label("Create New User"),
                 first, last, role,
                 categoriesHint,
-                categories,
+                categoriesList,
                 username, password,
                 add
         );
         root.setPadding(new Insets(10));
         return root;
+    }
+
+    public void refresh() {
+        if (categoriesList != null) {
+            categoriesList.getItems().setAll(system.getCategories().values());
+            categoriesList.refresh();
+        }
     }
 
     private void showError(String message) {

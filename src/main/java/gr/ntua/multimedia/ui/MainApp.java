@@ -1,25 +1,27 @@
 package gr.ntua.multimedia.ui;
 
 import gr.ntua.multimedia.domain.User;
-import gr.ntua.multimedia.persistence.JsonStorage;
+import gr.ntua.multimedia.persistence.MediaLabStorage;
 import gr.ntua.multimedia.service.MediaLabSystem;
 import gr.ntua.multimedia.ui.controller.DashboardController;
 import gr.ntua.multimedia.ui.controller.LoginController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 
 import java.nio.file.Path;
 
 public class MainApp extends Application {
-    private JsonStorage storage;
+
+    private MediaLabStorage storage;
     private MediaLabSystem system;
 
     @Override
     public void start(Stage stage) {
-        storage = new JsonStorage(Path.of("data", "medialab.json"));
+        storage = new MediaLabStorage(Path.of("medialab"));
         system = storage.loadOrCreateDefault();
 
         showLogin(stage);
@@ -27,7 +29,10 @@ public class MainApp extends Application {
 
     private void showLogin(Stage stage) {
         LoginController loginController = new LoginController(system);
-        Scene loginScene = new Scene(loginController.createView(user -> showDashboard(stage, user)), 420, 200);
+        Scene loginScene = new Scene(
+                loginController.createView(user -> showDashboard(stage, user)),
+                420, 200
+        );
         stage.setTitle("MediaLab Documents");
         stage.setScene(loginScene);
         stage.show();
@@ -45,9 +50,10 @@ public class MainApp extends Application {
                 900, 640
         );
         stage.setScene(dashboardScene);
+
         String msg = system.buildLoginPopupMessage(user);
         if (msg != null) {
-            javafx.application.Platform.runLater(() -> {
+            Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Notification");
                 alert.setHeaderText(null);
@@ -57,7 +63,6 @@ public class MainApp extends Application {
             });
         }
     }
-
 
     @Override
     public void stop() {
