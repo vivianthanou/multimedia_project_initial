@@ -60,7 +60,6 @@ final class UserService {
             throw new ValidationException("Non-admin users must have access to at least one category");
         }
 
-
         String passwordHash = PasswordHasher.hash(plainPassword);
         User created = switch (normalizedRole) {
             case "SIMPLE" -> new SimpleUser(username, passwordHash, firstName, lastName, validatedAccess, Set.of(), Map.of());
@@ -106,7 +105,6 @@ final class UserService {
             throw new ValidationException("Default admin cannot be modified");
         }
 
-        // ---- Determine final username
         String finalUsername = existing.getUsername();
         if (newUsernameOpt != null && newUsernameOpt.isPresent()) {
             String candidate = newUsernameOpt.get().trim();
@@ -116,12 +114,10 @@ final class UserService {
             finalUsername = candidate;
         }
 
-        // If username changes, ensure uniqueness
         if (!finalUsername.equals(existing.getUsername()) && usersByUsername.containsKey(finalUsername)) {
             throw new ValidationException("Username already exists: " + finalUsername);
         }
 
-        // ---- Determine final role
         String finalRole = existing.getRoleName();
         if (newRoleOpt != null && newRoleOpt.isPresent()) {
             String candidate = newRoleOpt.get().trim().toUpperCase();
@@ -134,7 +130,6 @@ final class UserService {
             finalRole = candidate;
         }
 
-        // ---- Determine final categories
         Set<String> finalAllowed = new HashSet<>(existing.getAllowedCategoryIds());
         if (newAllowedCategoryIdsOpt != null && newAllowedCategoryIdsOpt.isPresent()) {
             Set<String> incoming = newAllowedCategoryIdsOpt.get();
@@ -148,7 +143,6 @@ final class UserService {
             }
             finalAllowed = validated;
         }
-        // If categories changed, remove follows that belong to removed categories
         Set<String> finalFollowed = new HashSet<>(existing.getFollowedDocumentIds());
         Map<String, Integer> finalLastSeen = new HashMap<>(existing.getLastSeenVersionByDocId());
 
@@ -179,12 +173,10 @@ final class UserService {
             }
         }
 
-        // Non-admin users must have at least 1 category
         if (!"ADMIN".equalsIgnoreCase(finalRole) && finalAllowed.isEmpty()) {
             throw new ValidationException("Non-admin users must have access to at least one category");
         }
 
-        // ---- Determine final password hash
         String finalPasswordHash = existing.getPasswordHash();
         if (newPlainPasswordOpt != null && newPlainPasswordOpt.isPresent()) {
             String p = newPlainPasswordOpt.get();
@@ -194,7 +186,6 @@ final class UserService {
             finalPasswordHash = PasswordHasher.hash(p);
         }
 
-        // ---- Rebuild user preserving name + followed + lastSeen
         User rebuilt = switch (finalRole) {
             case "ADMIN" -> new Admin(
                     finalUsername,
@@ -226,7 +217,6 @@ final class UserService {
             default -> throw new ValidationException("Unsupported role: " + finalRole);
         };
 
-        // ---- Persist under correct map key
         if (!finalUsername.equals(existing.getUsername())) {
             usersByUsername.remove(existing.getUsername());
         }

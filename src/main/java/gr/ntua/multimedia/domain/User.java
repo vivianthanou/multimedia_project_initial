@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.OptionalInt;
 import java.util.Set;
 
 public abstract class User {
@@ -84,14 +83,6 @@ public abstract class User {
         return allowedCategoryIds.contains(requireNonBlank(categoryId, "categoryId"));
     }
 
-    protected void grantCategoryAccess(String categoryId) {
-        allowedCategoryIds.add(requireNonBlank(categoryId, "categoryId"));
-    }
-
-    protected void revokeCategoryAccess(String categoryId) {
-        allowedCategoryIds.remove(requireNonBlank(categoryId, "categoryId"));
-    }
-
     public void followDocument(String documentId) {
         followedDocumentIds.add(requireNonBlank(documentId, "documentId"));
     }
@@ -112,11 +103,6 @@ public abstract class User {
             throw new IllegalArgumentException("versionNumber must be >= 1");
         }
         lastSeenVersionByDocId.put(docId, versionNumber);
-    }
-
-    public OptionalInt lastSeenVersion(String documentId) {
-        Integer version = lastSeenVersionByDocId.get(requireNonBlank(documentId, "documentId"));
-        return version == null ? OptionalInt.empty() : OptionalInt.of(version);
     }
 
     public boolean hasNewVersion(String documentId, int currentVersionNumber) {

@@ -12,33 +12,6 @@ final class SimpleJson {
         return new Parser(json).parseValue();
     }
 
-    static String stringify(Object value) {
-        if (value == null) return "null";
-        if (value instanceof String s) return '"' + escape(s) + '"';
-        if (value instanceof Number || value instanceof Boolean) return String.valueOf(value);
-        if (value instanceof Map<?, ?> map) {
-            StringBuilder sb = new StringBuilder("{");
-            boolean first = true;
-            for (Map.Entry<?, ?> e : map.entrySet()) {
-                if (!first) sb.append(',');
-                first = false;
-                sb.append(stringify(String.valueOf(e.getKey()))).append(':').append(stringify(e.getValue()));
-            }
-            return sb.append('}').toString();
-        }
-        if (value instanceof List<?> list) {
-            StringBuilder sb = new StringBuilder("[");
-            boolean first = true;
-            for (Object o : list) {
-                if (!first) sb.append(',');
-                first = false;
-                sb.append(stringify(o));
-            }
-            return sb.append(']').toString();
-        }
-        throw new IllegalArgumentException("Unsupported JSON type: " + value.getClass());
-    }
-
     static String stringifyPretty(Object value) {
         StringBuilder sb = new StringBuilder();
         writePretty(value, sb, 0);

@@ -43,7 +43,6 @@ public class MainApp extends Application {
 
         Scene dashboardScene = new Scene(
                 dashboardController.createView(user, () -> {
-                    // SAVE on logout
                     storage.save(system);
                     showLogin(stage);
                 }),

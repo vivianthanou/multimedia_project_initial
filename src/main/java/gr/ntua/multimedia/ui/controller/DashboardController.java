@@ -25,13 +25,11 @@ public class DashboardController {
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(10));
 
-        // Header: user info + logout
         Label title = new Label("Logged in as " + user.getUsername() + " (" + user.getRoleName() + ")");
         Button logoutBtn = new Button("Logout");
         logoutBtn.setOnAction(e -> onLogout.run());
         HBox header = new HBox(10, title, logoutBtn);
 
-        // ===== Summary panel (Part 1 of assignment) =====
         Label categoriesCount = new Label();
         Label documentsCount = new Label();
         Label followedCount = new Label();
@@ -53,13 +51,10 @@ public class DashboardController {
         VBox topBox = new VBox(8, header, summaryBar);
         topBox.setPadding(new Insets(0, 0, 10, 0));
 
-        // ===== Functional area (Part 2) =====
         TabPane tabs = new TabPane();
 
-        // We'll store the real callback here (so we can refer to it before it is assigned)
         final Runnable[] onDataChangedHolder = new Runnable[1];
 
-        // Documents tab (always present)
         DocumentsController documentsController = new DocumentsController(system, () -> onDataChangedHolder[0].run());
         tabs.getTabs().add(new Tab("Documents", wrapScrollable(documentsController.createView(user))));
 
@@ -70,7 +65,6 @@ public class DashboardController {
             tabs.getTabs().add(new Tab("Users", wrapScrollable(adminUsersController.createView(admin))));
             tabs.getTabs().add(new Tab("Categories", wrapScrollable(adminCategoriesController.createView(admin))));
 
-            // ✅ Live refresh: summary + categories list (so doc counts update)
             onDataChangedHolder[0] = () -> {
                 refreshSummary.run();
                 documentsController.refresh();
@@ -78,7 +72,6 @@ public class DashboardController {
                 adminCategoriesController.refresh();
             };
         } else {
-            // Non-admin: only summary refresh
             onDataChangedHolder[0] = refreshSummary;
         }
 

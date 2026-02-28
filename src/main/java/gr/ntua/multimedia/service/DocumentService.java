@@ -1,5 +1,4 @@
 package gr.ntua.multimedia.service;
-
 import gr.ntua.multimedia.domain.Admin;
 import gr.ntua.multimedia.domain.Author;
 import gr.ntua.multimedia.domain.Category;
@@ -11,9 +10,6 @@ import gr.ntua.multimedia.exception.ValidationException;
 import gr.ntua.multimedia.util.DateTimeUtil;
 import gr.ntua.multimedia.util.IdUtil;
 import gr.ntua.multimedia.util.ValidationUtil;
-import gr.ntua.multimedia.service.FollowService;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -101,6 +97,6 @@ final class DocumentService {
                 .filter(d -> titleContains.isEmpty() || d.getTitle().toLowerCase().contains(titleContains.get().toLowerCase()))
                 .filter(d -> authorUsername.isEmpty() || d.getAuthorUsername().equals(authorUsername.get()))
                 .toList();
-        return Collections.unmodifiableList(results);
+        return results;
     }
 }

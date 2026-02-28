@@ -322,12 +322,4 @@ public class MediaLabStorage {
 
     @SuppressWarnings("unchecked")
     private List<Object> castList(Object value) { return (List<Object>) value; }
-
-    @SuppressWarnings("unchecked")
-    private List<String> castStringList(Object value) {
-        List<Object> raw = (List<Object>) value;
-        List<String> out = new ArrayList<>();
-        for (Object o : raw) out.add((String) o);
-        return out;
-    }
 }

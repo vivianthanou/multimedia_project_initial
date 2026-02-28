@@ -6,26 +6,40 @@
   <component name="ChangeListManager">
     <list default="true" id="23a5ea6a-bd8e-4d3e-8c10-4ceb19cd84d3" name="Changes" comment="first attempt">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medialab/categories.json" beforeDir="false" afterPath="$PROJECT_DIR$/medialab/categories.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medialab/documents.json" beforeDir="false" afterPath="$PROJECT_DIR$/medialab/documents.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/medialab/notifications.json" beforeDir="false" afterPath="$PROJECT_DIR$/medialab/notifications.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medialab/users.json" beforeDir="false" afterPath="$PROJECT_DIR$/medialab/users.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/domain/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/domain/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/AuthException.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/AuthException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/NotFoundException.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/NotFoundException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/PermissionDeniedException.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/PermissionDeniedException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/StorageException.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/StorageException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/ValidationException.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/exception/ValidationException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/persistence/DataStore.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/persistence/JsonStorage.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/persistence/MediaLabStorage.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/persistence/MediaLabStorage.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem$RemovedDocInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem$RemovedDocInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController$7.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/persistence/SimpleJson$Parser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/persistence/SimpleJson$Parser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/persistence/SimpleJson.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/persistence/SimpleJson.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/DocumentService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/DocumentService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/FollowService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/FollowService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/AuthException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/AuthException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/NotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/NotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/PermissionDeniedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/PermissionDeniedException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/StorageException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/StorageException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/ValidationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/exception/ValidationException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/persistence/DataStore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/persistence/JsonStorage.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/persistence/MediaLabStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/persistence/MediaLabStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/persistence/SimpleJson.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/persistence/SimpleJson.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/DocumentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/DocumentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/FollowService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/FollowService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/MediaLabSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/MediaLabSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/MainApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/MainApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminCategoriesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminCategoriesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminUsersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/AdminUsersController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/DashboardController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/DocumentsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/ui/controller/DocumentsController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,33 +93,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;D:/Βίβιαν/1. ECE - NTUA/11ο εξάμηνο/Ροή Υ - Τεχνολογία Πολυμέσων/multimedia_intellij/multimedia_project/src/main/java/org/example/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "D:/Βίβιαν/1. ECE - NTUA/11ο εξάμηνο/Ροή Υ - Τεχνολογία Πολυμέσων/multimedia_intellij/multimedia_project/src/main/java/org/example/Main.java",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="gr.ntua.multimedia.Main" />
@@ -146,7 +160,7 @@
       <workItem from="1771942134880" duration="12381000" />
       <workItem from="1772106420598" duration="8687000" />
       <workItem from="1772209061573" duration="3224000" />
-      <workItem from="1772287918369" duration="8028000" />
+      <workItem from="1772287918369" duration="13461000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <option name="closed" value="true" />

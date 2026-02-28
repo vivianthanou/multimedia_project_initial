@@ -20,7 +20,6 @@ public class AdminUsersController {
     private final MediaLabSystem system;
     private final Runnable onDataChanged;
 
-    // ✅ keep reference so we can refresh categories live
     private ListView<Category> categoriesList;
 
     public AdminUsersController(MediaLabSystem system, Runnable onDataChanged) {
@@ -29,7 +28,6 @@ public class AdminUsersController {
     }
 
     public VBox createView(Admin admin) {
-        // Users list
         ListView<User> users = new ListView<>();
         users.getItems().setAll(system.listUsers(admin));
         VBox.setVgrow(users, Priority.ALWAYS);
@@ -63,7 +61,6 @@ public class AdminUsersController {
                     PasswordField newPasswordField = new PasswordField();
                     newPasswordField.setPromptText("New password (leave empty to keep)");
 
-                    // Categories multi-select (built fresh each time, so it's already up to date)
                     ListView<Category> categoryList = new ListView<>();
                     categoryList.getItems().setAll(system.getCategories().values());
                     categoryList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -190,7 +187,6 @@ public class AdminUsersController {
             }
         });
 
-        // ----- Create user form
         categoriesList = new ListView<>();
         categoriesList.getItems().setAll(system.getCategories().values());
         categoriesList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -243,8 +239,6 @@ public class AdminUsersController {
                 first.clear(); last.clear(); role.clear(); username.clear(); password.clear();
                 categoriesList.getSelectionModel().clearSelection();
 
-            } catch (ValidationException ex) {
-                showError(ex.getMessage());
             } catch (RuntimeException ex) {
                 showError(ex.getMessage());
             }

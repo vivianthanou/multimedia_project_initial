@@ -30,7 +30,6 @@ public class AdminCategoriesController {
         categoriesList.getItems().setAll(system.getCategories().values());
         VBox.setVgrow(categoriesList, Priority.ALWAYS);
 
-        // ✅ Per-row actions (Rename / Delete)
         categoriesList.setCellFactory(lv -> new ListCell<>() {
             private final Label text = new Label();
             private final Button renameBtn = new Button("Rename");
@@ -45,7 +44,6 @@ public class AdminCategoriesController {
                     Category c = getItem();
                     if (c == null) return;
 
-                    // Rename dialog: Save / Cancel
                     TextField input = new TextField(c.getName());
                     input.setPrefColumnCount(25);
 
@@ -67,7 +65,6 @@ public class AdminCategoriesController {
                         return;
                     }
                     if (newName.equals(c.getName())) {
-                        // no changes
                         return;
                     }
 
@@ -84,7 +81,6 @@ public class AdminCategoriesController {
                     Category c = getItem();
                     if (c == null) return;
 
-                    // Confirm delete: Delete / Cancel
                     Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
                     confirm.setTitle("Delete Category");
                     confirm.setHeaderText("Delete category '" + c.getName() + "'?");
@@ -96,7 +92,7 @@ public class AdminCategoriesController {
 
                     Optional<ButtonType> choice = confirm.showAndWait();
                     if (choice.isEmpty() || choice.get() != deleteType) {
-                        return; // Cancel
+                        return;
                     }
 
                     try {
@@ -157,7 +153,7 @@ public class AdminCategoriesController {
     public void refresh() {
         if (categoriesList != null) {
             categoriesList.getItems().setAll(system.getCategories().values());
-            categoriesList.refresh(); // forces re-render -> docCount recalculates
+            categoriesList.refresh();
         }
     }
     private String shortId(String id) {

@@ -132,10 +132,9 @@ public class MediaLabSystem {
      *
      * @param adminActor   the administrator performing the action
      * @param categoryName the category name
-     * @return the created category
      */
-    public Category addCategory(Admin adminActor, String categoryName) {
-        return categoryService.addCategory(adminActor, categoryName);
+    public void addCategory(Admin adminActor, String categoryName) {
+        categoryService.addCategory(adminActor, categoryName);
     }
 
     /**
@@ -166,10 +165,9 @@ public class MediaLabSystem {
      * @param title          document title
      * @param categoryId     category id where the document belongs
      * @param initialContent initial document content
-     * @return the created document
      */
-    public Document createDocument(Author actor, String title, String categoryId, String initialContent) {
-        return documentService.createDocument(actor, title, categoryId, initialContent);
+    public void createDocument(Author actor, String title, String categoryId, String initialContent) {
+        documentService.createDocument(actor, title, categoryId, initialContent);
     }
 
     /**

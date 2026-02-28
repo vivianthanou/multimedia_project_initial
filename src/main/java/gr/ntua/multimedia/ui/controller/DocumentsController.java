@@ -29,7 +29,7 @@ public class DocumentsController {
     private ListView<Document> searchResults;
     private ListView<Document> followedList;
 
-    private ComboBox<Category> createCategoryBox; // only for Author/Admin
+    private ComboBox<Category> createCategoryBox;
     private TextField createDocTitle;
     private TextArea createDocContent;
 
@@ -51,7 +51,7 @@ public class DocumentsController {
 
         categoryFilterBox = new ComboBox<>();
         categoryFilterBox.setPromptText("All categories");
-        categoryFilterBox.getItems().add(null); // null => All
+        categoryFilterBox.getItems().add(null);
 
         categoryFilterBox.setCellFactory(lv -> new ListCell<>() {
             @Override protected void updateItem(Category item, boolean empty) {
@@ -84,7 +84,7 @@ public class DocumentsController {
 
         Runnable runSearch = () -> {
             try {
-                Category selectedCategory = categoryFilterBox.getValue(); // null => all
+                Category selectedCategory = categoryFilterBox.getValue();
                 Optional<String> categoryIdOpt = (selectedCategory == null)
                         ? Optional.empty()
                         : Optional.of(selectedCategory.getId());
