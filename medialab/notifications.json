@@ -1,9 +1,15 @@
 {
   "pendingRemovedByUsername": {
-    "stamou": [
+    "vv": [
       {
-        "title": "CNN",
-        "categoryName": "AI"
+        "title": "multimedia 1",
+        "categoryName": "Multimedia"
+      }
+    ],
+    "vt": [
+      {
+        "title": "multimedia 1",
+        "categoryName": "Multimedia"
       }
     ]
   }

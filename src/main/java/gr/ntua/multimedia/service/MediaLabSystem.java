@@ -39,8 +39,8 @@ public class MediaLabSystem {
         this.categoriesById = new HashMap<>();
         this.documentsById = new HashMap<>();
         this.authService = new AuthService(this.usersByUsername);
-        this.userService = new UserService(this.usersByUsername, this.categoriesById, this.documentsById);
         this.followService = new FollowService(this.documentsById);
+        this.userService = new UserService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
         this.categoryService = new CategoryService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
         this.documentService = new DocumentService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
 
@@ -61,8 +61,8 @@ public class MediaLabSystem {
         this.categoriesById = new HashMap<>(categoriesById);
         this.documentsById = new HashMap<>(documentsById);
         this.authService = new AuthService(this.usersByUsername);
-        this.userService = new UserService(this.usersByUsername, this.categoriesById, this.documentsById);
         this.followService = new FollowService(this.documentsById);
+        this.userService = new UserService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
         this.categoryService = new CategoryService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
         this.documentService = new DocumentService(this.usersByUsername, this.categoriesById, this.documentsById, this.followService);
         if (!this.usersByUsername.containsKey("medialab")) {

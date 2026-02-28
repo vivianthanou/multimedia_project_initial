@@ -24,13 +24,15 @@ final class UserService {
     private final Map<String, User> usersByUsername;
     private final Map<String, Category> categoriesById;
     private final Map<String, Document> documentsById;
+    private final FollowService followService;
 
     UserService(Map<String, User> usersByUsername,
                 Map<String, Category> categoriesById,
-                Map<String, Document> documentsById) {
+                Map<String, Document> documentsById, FollowService followService) {
         this.usersByUsername = usersByUsername;
         this.categoriesById = categoriesById;
         this.documentsById = documentsById;
+        this.followService = followService;
     }
 
     void addUser(Admin adminActor, String firstName, String lastName, String role,
@@ -80,6 +82,7 @@ final class UserService {
         if (usersByUsername.remove(username) == null) {
             throw new NotFoundException("User not found: " + username);
         }
+        followService.clearNotificationsForUser(username);
     }
 
     List<User> listUsers(Admin adminActor) {
@@ -218,8 +221,10 @@ final class UserService {
         };
 
         if (!finalUsername.equals(existing.getUsername())) {
+            followService.renameNotificationsUserKey(existing.getUsername(), finalUsername);
             usersByUsername.remove(existing.getUsername());
         }
+
         usersByUsername.put(finalUsername, rebuilt);
     }
 

@@ -106,4 +106,16 @@ final class FollowService {
             pendingRemovedByUsername.put(e.getKey(), list);
         }
     }
+    void clearNotificationsForUser(String username) {
+        pendingRemovedByUsername.remove(username);
+    }
+    void renameNotificationsUserKey(String oldUsername, String newUsername) {
+        if (oldUsername.equals(newUsername)) return;
+        List<RemovedDocInfo> items = pendingRemovedByUsername.remove(oldUsername);
+        if (items == null || items.isEmpty()) return;
+
+        pendingRemovedByUsername
+                .computeIfAbsent(newUsername, k -> new ArrayList<>())
+                .addAll(items);
+    }
 }
