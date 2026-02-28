@@ -5,19 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="23a5ea6a-bd8e-4d3e-8c10-4ceb19cd84d3" name="Changes" comment="first attempt">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medialab/categories.json" beforeDir="false" afterPath="$PROJECT_DIR$/medialab/categories.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medialab/users.json" beforeDir="false" afterPath="$PROJECT_DIR$/medialab/users.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/DocumentService.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/DocumentService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem$RemovedDocInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem$RemovedDocInfo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/service/MediaLabSystem.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/MainApp.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/MainApp.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/AdminCategoriesController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/multimedia_project/gr/ntua/multimedia/ui/controller/DocumentsController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/FollowService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/FollowService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/MediaLabSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/MediaLabSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/ntua/multimedia/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,7 +126,7 @@
       <workItem from="1771942134880" duration="12381000" />
       <workItem from="1772106420598" duration="8687000" />
       <workItem from="1772209061573" duration="3224000" />
-      <workItem from="1772287918369" duration="14592000" />
+      <workItem from="1772287918369" duration="15172000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <option name="closed" value="true" />

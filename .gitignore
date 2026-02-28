@@ -1,0 +1,14 @@
+# IntelliJ (keep project files, ignore only user-specific)
+.idea/workspace.xml
+.idea/shelf/
+.idea/httpRequests/
+
+# Build output
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
