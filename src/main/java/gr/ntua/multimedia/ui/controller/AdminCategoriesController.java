@@ -120,7 +120,7 @@ public class AdminCategoriesController {
                             .filter(d -> d.getCategoryId().equals(item.getId()))
                             .count();
 
-                    text.setText(item.getName() + " | " + item.getId() + " | " + docCount);
+                    text.setText(item.getName() + " | " + shortId(item.getId()) + " | " + docCount);
                     setGraphic(row);
                 }
             }
@@ -159,5 +159,10 @@ public class AdminCategoriesController {
             categoriesList.getItems().setAll(system.getCategories().values());
             categoriesList.refresh(); // forces re-render -> docCount recalculates
         }
+    }
+    private String shortId(String id) {
+        if (id == null) return "-";
+        String s = id.trim();
+        return s.length() <= 8 ? s : s.substring(0, 8);
     }
 }

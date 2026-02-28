@@ -1,16 +1,45 @@
 [
   {
-    "createdAt": "2026-02-19T19:22:16.959305400",
+    "createdAt": "2026-02-28T18:54:28.576098200",
     "versions": [
       {
-        "createdAt": "2026-02-19T19:22:16.959305400",
+        "createdAt": "2026-02-28T18:54:28.576098200",
         "versionNumber": 1,
-        "content": "\\tBode diagrams.\nThey tell us information about amplitude.\n\\tAnd frequency"
+        "content": "sss\n    ddd\ndd"
       }
     ],
-    "authorUsername": "manos",
-    "id": "78495ae0-98da-4532-b440-8264399dbc24",
-    "title": "Bode",
+    "authorUsername": "medialab",
+    "id": "d2d07164-e0d2-4f09-a6ee-9c506dfcd3fd",
+    "title": "sae",
+    "categoryId": "2911cced-7d92-47f5-97d1-1e6553a0a55f"
+  },
+  {
+    "createdAt": "2026-02-28T18:51:31.122315500",
+    "versions": [
+      {
+        "createdAt": "2026-02-28T18:51:31.122315500",
+        "versionNumber": 1,
+        "content": "Bode\n    Bode\nBode"
+      },
+      {
+        "createdAt": "2026-02-28T18:51:47.814738400",
+        "versionNumber": 2,
+        "content": "Bode\n    Bode\nBode\n Bode"
+      },
+      {
+        "createdAt": "2026-02-28T18:52:09.860821500",
+        "versionNumber": 3,
+        "content": "Bode\n    Bode\nBode\n    Bode\nBode Bode"
+      },
+      {
+        "createdAt": "2026-02-28T18:52:57.340720700",
+        "versionNumber": 4,
+        "content": "Bode\n    Bode\nBode\n    Bode\nBode \n    Bode"
+      }
+    ],
+    "authorUsername": "fwt",
+    "id": "7a905cfd-4eba-46f5-8ec2-a6d8e3f79f7e",
+    "title": "Bode Diagram",
     "categoryId": "2911cced-7d92-47f5-97d1-1e6553a0a55f"
   },
   {
@@ -76,18 +105,23 @@
     "categoryId": "5d808f36-d4c9-409b-91f3-9955b2ce1417"
   },
   {
-    "createdAt": "2026-02-24T20:51:52.401855",
+    "createdAt": "2026-02-28T18:49:33.589273700",
     "versions": [
       {
-        "createdAt": "2026-02-24T20:51:52.401855",
+        "createdAt": "2026-02-28T18:49:33.589273700",
         "versionNumber": 1,
-        "content": "valia"
+        "content": "fff\n    fff\nff"
+      },
+      {
+        "createdAt": "2026-02-28T18:52:22.037166600",
+        "versionNumber": 2,
+        "content": "fff\n    fff\nff\nff\n    ff\nff\nff"
       }
     ],
-    "authorUsername": "stamou",
-    "id": "8116c773-0164-4b17-a15a-296ca14471d2",
-    "title": "valia",
-    "categoryId": "570915dd-5166-415a-9810-509d44f61968"
+    "authorUsername": "fwt",
+    "id": "3fbbeeb2-f99a-4afb-a7c0-84741959bb6c",
+    "title": "Dynamic Programming",
+    "categoryId": "2eed1282-cd93-4d82-850a-1ddb31da35c3"
   },
   {
     "createdAt": "2026-02-22T17:34:03.947320900",
@@ -122,44 +156,5 @@
     "id": "6cde2d19-cd25-4e94-9175-891cf5a1cc6a",
     "title": "static",
     "categoryId": "2821d2eb-0847-456b-99ad-46d73ee96ef8"
-  },
-  {
-    "createdAt": "2026-02-24T20:46:05.757941700",
-    "versions": [
-      {
-        "createdAt": "2026-02-24T20:46:05.757941700",
-        "versionNumber": 1,
-        "content": "cnn\n\ndnn\n\ngnn"
-      },
-      {
-        "createdAt": "2026-02-24T20:46:25.904913700",
-        "versionNumber": 2,
-        "content": "cnn\n\ndnn\n\ngnn\n\n."
-      },
-      {
-        "createdAt": "2026-02-24T20:47:09.349658200",
-        "versionNumber": 3,
-        "content": "cnn\n\ndnn\n\ngnn\n\n.\n\n."
-      },
-      {
-        "createdAt": "2026-02-24T20:47:24.685873600",
-        "versionNumber": 4,
-        "content": "cnn\n\ndnn\n\ngnn"
-      },
-      {
-        "createdAt": "2026-02-24T20:47:36.320386500",
-        "versionNumber": 5,
-        "content": "    cnn\n\n    dnn\n\n    gnn"
-      },
-      {
-        "createdAt": "2026-02-24T20:51:33.066988500",
-        "versionNumber": 6,
-        "content": "    cnn\n\n    dnn\n\n    gnn\n\nvalia"
-      }
-    ],
-    "authorUsername": "stamou",
-    "id": "07d2c5f4-6907-408d-adf7-2e074bb69bb2",
-    "title": "CNN",
-    "categoryId": "570915dd-5166-415a-9810-509d44f61968"
   }
 ]

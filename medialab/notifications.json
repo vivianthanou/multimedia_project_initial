@@ -2,8 +2,14 @@
   "pendingRemovedByUsername": {
     "ork": [
       {
-        "title": "GTR",
+        "title": "todel",
         "categoryName": "SAEEE"
+      }
+    ],
+    "stamou": [
+      {
+        "title": "CNN",
+        "categoryName": "AI"
       }
     ]
   }

@@ -49,14 +49,10 @@ public class DocumentsController {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        // =========================================================
-        // 1) SEARCH DOCUMENTS PANE
-        // =========================================================
         categoryFilterBox = new ComboBox<>();
         categoryFilterBox.setPromptText("All categories");
         categoryFilterBox.getItems().add(null); // null => All
 
-        // Cell factories (once)
         categoryFilterBox.setCellFactory(lv -> new ListCell<>() {
             @Override protected void updateItem(Category item, boolean empty) {
                 super.updateItem(item, empty);
@@ -225,9 +221,6 @@ public class DocumentsController {
         searchPane.setCollapsible(false);
         searchPane.setExpanded(true);
 
-        // =========================================================
-        // 2) FOLLOWING DOCUMENTS PANE
-        // =========================================================
         Label followingHint = new Label("Documents you Follow");
         followingHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #555;");
 
@@ -275,9 +268,6 @@ public class DocumentsController {
         followedPane.setCollapsible(false);
         followedPane.setExpanded(true);
 
-        // =========================================================
-        // 3) CREATE NEW DOCUMENT PANE (Author/Admin only)
-        // =========================================================
         TitledPane createPane = null;
 
         if (currentUser instanceof Author author) {
@@ -343,16 +333,12 @@ public class DocumentsController {
             createPane.setExpanded(true);
         }
 
-        // =========================================================
-        // Root layout
-        // =========================================================
         VBox root = new VBox(12);
         root.setPadding(new Insets(10));
 
         root.getChildren().addAll(searchPane, followedPane);
         if (createPane != null) root.getChildren().add(createPane);
 
-        // followed list refresh function
         refreshFollowedListHolder = () -> {
             List<Document> docs = new ArrayList<>();
             for (String docId : currentUser.getFollowedDocumentIds()) {
@@ -365,7 +351,6 @@ public class DocumentsController {
             followedList.getItems().setAll(docs);
         };
 
-        // initial data load
         reloadCategoryChoices();
         runSearchHolder.run();
         refreshFollowedListHolder.run();
@@ -373,15 +358,11 @@ public class DocumentsController {
         return root;
     }
 
-    // ===== LIVE refresh helpers =====
-
     private void reloadCategoryChoices() {
         if (currentUser == null || categoryFilterBox == null) return;
 
-        // keep current selection if possible
         Category selected = categoryFilterBox.getValue();
 
-        // rebuild filter categories
         categoryFilterBox.getItems().clear();
         categoryFilterBox.getItems().add(null);
 
@@ -402,7 +383,6 @@ public class DocumentsController {
             categoryFilterBox.getSelectionModel().select(match);
         }
 
-        // rebuild create categories (author/admin only)
         if (createCategoryBox != null && currentUser instanceof Author author) {
             Category prev = createCategoryBox.getValue();
 
@@ -430,8 +410,6 @@ public class DocumentsController {
         if (searchResults != null) searchResults.refresh();
         if (followedList != null) followedList.refresh();
     }
-
-    // ---------- existing helpers ----------
 
     private Label formatHintCopy() {
         Label l = new Label("Format: Title | Author | Category | Created At | Version | Document ID");
@@ -466,7 +444,7 @@ public class DocumentsController {
                                 categoryName + " | " +
                                 createdAt + " | " +
                                 "v" + item.getLatestVersionNumber() + " | " +
-                                item.getId()
+                                shortId(item.getId())
                 );
             }
         };
@@ -608,5 +586,10 @@ public class DocumentsController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    private String shortId(String id) {
+        if (id == null) return "-";
+        String s = id.trim();
+        return s.length() <= 8 ? s : s.substring(0, 8);
     }
 }

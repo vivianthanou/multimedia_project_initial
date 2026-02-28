@@ -68,7 +68,6 @@ public class MediaLabStorage {
                 return system;
             }
 
-            // 1) Load core 3
             Object usersParsed = SimpleJson.parse(Files.readString(usersPath));
             Object categoriesParsed = SimpleJson.parse(Files.readString(categoriesPath));
             Object documentsParsed = SimpleJson.parse(Files.readString(documentsPath));
@@ -79,7 +78,6 @@ public class MediaLabStorage {
 
             MediaLabSystem system = rebuildSystem(users, categories, documents);
 
-            // 2) Load notifications (optional)
             if (Files.exists(notificationsPath)) {
                 Object notifParsed = SimpleJson.parse(Files.readString(notificationsPath));
                 Map<String, Object> notifRoot = castMap(notifParsed);
@@ -87,7 +85,6 @@ public class MediaLabStorage {
                         castMap(notifRoot.getOrDefault("pendingRemovedByUsername", Map.of()));
                 system.importPendingRemoved(parsePendingRemoved(pendingRaw));
             } else {
-                // if missing -> empty
                 system.importPendingRemoved(Map.of());
             }
 
@@ -97,8 +94,6 @@ public class MediaLabStorage {
             throw new StorageException("Failed to load data", e);
         }
     }
-
-    // -------------------- rebuild (ίδιο pattern με JsonStorage) --------------------
 
     private MediaLabSystem rebuildSystem(List<UserDTO> users, List<CategoryDTO> categories, List<DocumentDTO> documents) {
         Map<String, User> userMap = new HashMap<>();
@@ -141,10 +136,11 @@ public class MediaLabStorage {
         return new MediaLabSystem(userMap, categoryMap, documentMap);
     }
 
-    // -------------------- JSON export helpers (ίδια με JsonStorage) --------------------
-
     private List<Object> usersToJson(MediaLabSystem system) {
         List<Object> list = new ArrayList<>();
+        Map<String, Document> docs = system.getDocuments();
+        Map<String, Category> cats = system.getCategories();
+
         for (User user : system.getUsers().values()) {
             Map<String, Object> m = new HashMap<>();
             m.put("username", user.getUsername());
@@ -152,11 +148,33 @@ public class MediaLabStorage {
             m.put("firstName", user.getFirstName());
             m.put("lastName", user.getLastName());
             m.put("role", user.getRoleName());
-            m.put("allowedCategoryIds", new ArrayList<>(user.getAllowedCategoryIds()));
-            m.put("followedDocumentIds", new ArrayList<>(user.getFollowedDocumentIds()));
+            List<String> allowedIds = new ArrayList<>(user.getAllowedCategoryIds());
+            List<String> followedIds = new ArrayList<>(user.getFollowedDocumentIds());
+            // Readability-only: allowedCategories = [{id,name}]
+            List<Object> allowedReadable = new ArrayList<>();
+            for (String catId : allowedIds) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("id", catId);
+                Category c = cats.get(catId);
+                item.put("name", (c != null) ? c.getName() : "<deleted>");
+                allowedReadable.add(item);
+            }
+            m.put("allowedCategories", allowedReadable);
+           // Readability-only: followedDocuments = [{id,title}]
+            List<Object> followedReadable = new ArrayList<>();
+            for (String docId : followedIds) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("id", docId);
+                Document d = docs.get(docId);
+                item.put("title", (d != null) ? d.getTitle() : "<deleted>");
+                followedReadable.add(item);
+            }
+            m.put("followedDocuments", followedReadable);
+
             m.put("lastSeenVersionByDocId", new HashMap<>(user.getLastSeenVersionByDocId()));
             list.add(m);
         }
+
         return list;
     }
 
@@ -194,8 +212,6 @@ public class MediaLabStorage {
         return list;
     }
 
-    // -------------------- JSON parse helpers (ίδια λογική με JsonStorage) --------------------
-
     private List<UserDTO> parseUsers(List<Object> values) {
         List<UserDTO> out = new ArrayList<>();
         for (Object v : values) {
@@ -205,14 +221,27 @@ public class MediaLabStorage {
             for (Map.Entry<String, Object> e : seenRaw.entrySet()) {
                 seen.put(e.getKey(), ((Number) e.getValue()).intValue());
             }
+            List<String> allowedIds = new ArrayList<>();
+            for (Object o : (List<Object>) m.getOrDefault("allowedCategories", List.of())) {
+                Map<String, Object> mm = castMap(o);
+                Object id = mm.get("id");
+                if (id != null) allowedIds.add((String) id);
+            }
+
+            List<String> followedIds = new ArrayList<>();
+            for (Object o : (List<Object>) m.getOrDefault("followedDocuments", List.of())) {
+                Map<String, Object> mm = castMap(o);
+                Object id = mm.get("id");
+                if (id != null) followedIds.add((String) id);
+            }
             out.add(new UserDTO(
                     (String) m.get("username"),
                     (String) m.get("passwordHash"),
                     (String) m.get("firstName"),
                     (String) m.get("lastName"),
                     (String) m.get("role"),
-                    castStringList(m.getOrDefault("allowedCategoryIds", List.of())),
-                    castStringList(m.getOrDefault("followedDocumentIds", List.of())),
+                    allowedIds,
+                    followedIds,
                     seen
             ));
         }
@@ -253,10 +282,7 @@ public class MediaLabStorage {
         return out;
     }
 
-    // -------------------- notifications (pendingRemovedByUsername) --------------------
-
     private Map<String, Object> exportPendingRemoved(MediaLabSystem system) {
-        // Θα το πάρουμε μέσω public wrapper στο MediaLabSystem
         Map<String, List<MediaLabSystem.RemovedDocInfo>> pending = system.exportPendingRemoved();
 
         Map<String, Object> out = new HashMap<>();
@@ -290,8 +316,6 @@ public class MediaLabStorage {
         }
         return out;
     }
-
-    // -------------------- casts --------------------
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> castMap(Object value) { return (Map<String, Object>) value; }
